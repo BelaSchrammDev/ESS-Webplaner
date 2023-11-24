@@ -1182,8 +1182,8 @@
             if (faKunde > 0) cellColor = 'lightgreen';
             else if (faLager > 0) cellColor = 'lightpink';
             return `<td title="${cellTitle}">
-                    ${faKunde > 0 ? `<span style="color: lightgreen;">${faKunde}</span>` : ' '}
-                    ${faLager > 0 ? `<span style="color: lightpink;">(${faLager})</span>` : ' '}
+                    ${faKunde > 0 ? `<span style="color: green;">${faKunde}</span>` : ' '}
+                    ${faLager > 0 ? `<span style="color: red;">(${faLager})</span>` : ' '}
                     </td>`;
         }
 
