@@ -369,6 +369,7 @@
                     if (thProp.diameter > 20) bohrer -= 5;
                     else bohrer -= 3;
                     element.LDBOHRDURCHMESSER = bohrer.toFixed(2);
+                    if (element.LDBOHRDURCHMESSER < 1.6) element.LDBOHRDURCHMESSER = 1.6;
                 }
             }
         }
@@ -1180,13 +1181,16 @@
             }
             if (faKunde > 0) cellColor = 'lightgreen';
             else if (faLager > 0) cellColor = 'lightpink';
-            return `<td title="${cellTitle}" style="background-color: ${cellColor}">${faKunde > 0 ? faKunde : ' '} ${faLager > 0 ? '(' + faLager + ')' : ' '}</td>`;
+            return `<td title="${cellTitle}">
+                    ${faKunde > 0 ? `<span style="color: lightgreen;">${faKunde}</span>` : ' '}
+                    ${faLager > 0 ? `<span style="color: lightpink;">(${faLager})</span>` : ' '}
+                    </td>`;
         }
 
 
         function renderRohDMWeek() {
             const renderRows = ['0', '22', '32', '38', '45', '53', '63', '71',];
-            const maxWeekShows = 5;
+            const maxWeekShows = 6;
             let currentWeek = getWeekNumber(new Date(Date.now())) - 2;
             let tabelInnerHTML = '';
             showLinesWeek = 0;
