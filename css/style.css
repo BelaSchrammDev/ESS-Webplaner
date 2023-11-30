@@ -1,0 +1,224 @@
+:root {
+    --filter_height: 50px;
+    --list_margin_top: 100px;
+
+    --button_bar_left_width: 120px;
+}
+
+.hide {
+    display: none;
+}
+
+/* ------------------------------------------------------ */
+
+.button_bar_left {
+    position: fixed;
+    left: 0;
+    top: var(--filter_height);
+    bottom: 0;
+    background-color: bisque;
+    width: var(--button_bar_left_width);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.button_bar_left button {
+    border-radius: 10px;
+}
+
+.button_bar_left span {
+    text-align: center;
+}
+
+/* ------------------------------------------------------ */
+
+.list_content {
+    margin-top: var(--list_margin_top);
+    width: max-content;
+    padding-left: var(--button_bar_left_width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table,
+th,
+td {
+    border-collapse: collapse;
+}
+
+/* ------------------------------------------------------ */
+
+.table_main th {
+    height: 40px;
+    text-wrap: wrap;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    vertical-align: bottom;
+    color: green;
+}
+
+.table_main td {
+    border: 1px solid black;
+    text-align: center;
+}
+
+/* ------------------------------------------------------ */
+
+.table_week th {
+    font-size: 50px;
+    font-weight: 1000;
+    text-align: center;
+    vertical-align: middle;
+    color: green;
+}
+
+.table_week td:nth-child(1) {
+    border: 4px solid black;
+    text-align: right;
+    font-size: 40px;
+    font-weight: 1000;
+}
+
+.table_week td:nth-child(1n+2) {
+    width: 150px;
+    height: 70px;
+    border: 4px solid black;
+    text-align: left;
+    font-size: 30px;
+    font-weight: 1000;
+    padding-left: 20px;
+}
+
+/* ------------------------------------------------------ */
+.filters {
+    padding-left: 50px;
+    padding-right: 50px;
+    background-color: gray;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--filter_height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    min-width: 900px;
+}
+
+.filters span {
+    color: black;
+    font-weight: bold;
+    background-color: lightgray;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.filter_infos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.file_choise {
+    padding: 10px;
+    border: 2px solid green;
+    border-radius: 5px;
+    background-color: gray;
+    margin: auto;
+    height: max-content;
+    width: max-content;
+}
+
+/* ------------------------------------------------------ */
+
+.changegewindetype {
+    position: fixed;
+    left: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.change_gt_innerbox {
+    position: absolute;
+    left: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.change_gt_actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.change_gt_box {
+    height: max-content;
+    width: max-content;
+    background-color: lightgray;
+    border-radius: 10px;
+    padding: 20px;
+    border: 4px solid orange;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
+}
+
+/* ------------------------------------------------------ */
+
+@media print {
+    .list_type {
+        display: block;
+    }
+
+    .button_bar_left {
+        display: none;
+    }
+
+    .button_bar_right {
+        display: none;
+    }
+
+    .filters {
+        position: unset;
+        min-width: unset;
+        /* width: 600px; */
+    }
+
+    .list_content {
+        margin-top: 0;
+        padding-left: 0;
+    }
+
+    .table_main th:last-child,
+    .table_main td:last-child {
+        display: none;
+    }
+
+    body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}
