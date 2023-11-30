@@ -572,7 +572,7 @@
         function getDateFromGER(dateString) {
             const dateStrings = dateString.split('.');
             if (dateStrings.length > 2) {
-                if (dateStrings[2].length == 2) datestrings[2] = '20' + datestrings[2];
+                if (dateStrings[2].length == 2) dateStrings[2] = '20' + dateStrings[2];
                 return new Date(+dateStrings[2], +dateStrings[1] - 1, +dateStrings[0]);
             }
             return new Date('2022', '0', '1');
