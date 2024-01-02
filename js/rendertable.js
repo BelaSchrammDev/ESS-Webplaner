@@ -262,7 +262,13 @@ function renderWeekCellInfo(week, rohDM, minrohDM) {
 function renderRohDMWeek() {
     const renderRows = ['0', '22', '32', '38', '45', '53', '63', '71',];
     const maxWeekShows = 6;
-    let currentWeek = getWeekNumber(new Date(Date.now())) - 2;
+    let weekNumbers = [];
+    let datetimeNow = new Date(Date.now());
+    datetimeNow.setDate(datetimeNow.getDate() - 14); // startweek
+    for (let index = 0; index < maxWeekShows; index++) {
+        weekNumbers.push(getWeekNumber(datetimeNow));
+        datetimeNow.setDate(datetimeNow.getDate() + 7);
+    }
     let tabelInnerHTML = '';
     showLinesWeek = 0;
 
@@ -272,7 +278,8 @@ function renderRohDMWeek() {
         let firstCell = '';
         if (rohDM == '0') firstCell = '<th></th>';
         else firstCell = `<td>&Oslash;${rohDM}</td>`;
-        for (let week = currentWeek; week < currentWeek + maxWeekShows; week++) {
+        for (let wIndex = 0; wIndex < weekNumbers.length; wIndex++) {
+            let week = weekNumbers[wIndex];
             if (rohDM == '0') {
                 headRow += `<th>${week}</th>`;
             } else {

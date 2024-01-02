@@ -353,6 +353,12 @@ function isFieldEqual(element, field, value) {
     return element[field] ? element[field] == value : false;
 }
 
+
+function isFieldEqualKA(element, field, value) {
+    return element[field] ? element[field] == value : false;
+}
+
+
 function isFieldNotEqualArray(element, field, noTypes) {
     return !noTypes.includes(element[field]);
 }
