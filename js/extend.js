@@ -190,6 +190,8 @@ function getThreadPropertys(abmessung) {
     }
     else if (threadPropertys.type == 'M' || threadPropertys.type == 'Tr') {
         propertyStr = propertyStr.replaceAll(',', '.');
+        propertyStr = propertyStr.replaceAll('SK', ' ');
+        propertyStr = propertyStr.replaceAll('Sk', ' ');
         if (propertyStr.includes('x')) {
             threadPropertys.diameter = getSubstrX(propertyStr);
             threadPropertys.pitch = getSubstrHS(propertyStr.substring(propertyStr.indexOf('x') + 1));
