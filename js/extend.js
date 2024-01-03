@@ -80,6 +80,9 @@ function extendABMESSUNG(element) {
                 element.ABMESSUNG_PUR = abmessung.substring(abmessung.indexOf(' ') + 1);
             }
         }
+	    else {
+            element.ABMESSUNG_PUR = abmessung;
+	    }
     }
 }
 
