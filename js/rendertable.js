@@ -260,7 +260,7 @@ function renderWeekCellInfo(week, rohDM, minrohDM) {
 
 
 function renderRohDMWeek() {
-    const renderRows = ['0', '22', '32', '38', '45', '53', '63', '71'];
+    const renderRows = ['0', '22', '32', '38', '45', '53', '63', '71',];
     const maxWeekShows = 6;
     let weekNumbers = [];
     let datetimeNow = new Date(Date.now());
