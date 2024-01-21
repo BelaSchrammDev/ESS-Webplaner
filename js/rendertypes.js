@@ -199,6 +199,23 @@ const renderTypes = {
             }
         ]
     },
+    'laeppka': {
+        'group': 'kennwort',
+        // sort
+        'sort': 'date_laepp',
+        // info setzen
+        'info': 'Alle Kundenaufträge zum Läppen',
+        'buttonText': 'Läppen KA',
+        // tabelle rendern
+        'tablekeys': tableViewLaeppKeys,
+        'filters': [
+            {
+                function: isFieldEqualKA,
+                'field': 'KENNWORT',
+                'value': 'S L'
+            }
+        ]
+    },
     'schleif': {
         'group': 'kennwort',
         // sort
@@ -349,12 +366,13 @@ function isFieldsEqualArray(element, fields, values) {
     return equal.includes(false) ? false : true;
 }
 
-function isFieldEqual(element, field, value) {
+function isFieldEqualKA(element, field, value) {
+    if (element.ZU_AUFTRAG == '00000000') return false;
     return element[field] ? element[field] == value : false;
 }
 
 
-function isFieldEqualKA(element, field, value) {
+function isFieldEqual(element, field, value) {
     return element[field] ? element[field] == value : false;
 }
 
