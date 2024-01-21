@@ -1,6 +1,5 @@
-
-
 let lastRenderType = undefined;
+
 
 const tableViewAllKeys = ['NUMMER', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'GEWINDETYPE', 'NENNDURCHMESSER', 'STEIGUNG', 'T_R', 'T_LAEPP', 'STATUS', 'KENNWORT',];
 const tableViewRohteilKeys = ['NUMMER', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'T_R', 'ROHTEILWOCHE', 'KENNWORT',];
@@ -39,12 +38,11 @@ const sorters = {
     },
 };
 
+
 const button_groups = {
     kennwort: 'Filtern nach Kennwort',
     gewindeart: 'Filtern nach Gewindeart',
 };
-
-
 
 
 const renderTypes = {

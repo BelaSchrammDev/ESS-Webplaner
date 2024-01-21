@@ -138,33 +138,46 @@ const threatDiameterRG = {
 }
 
 
-function getSubstrHS(text) { let pos = text.search(/[\s-]/); if (pos == -1) return text; return text.substring(0, pos); }
+function getSubstrHS(text) {
+    let pos = text.search(/[\s-]/); if (pos == -1) return text; return text.substring(0, pos);
+}
 
 
-function getSubstrMinus(text) { let pos = text.search(/[-]/); if (pos == -1) return text; return text.substring(0, pos); }
+function getSubstrMinus(text) {
+    let pos = text.search(/[-]/); if (pos == -1) return text; return text.substring(0, pos);
+}
 
 
-function getSubstrX(text) { let pos = text.search(/[x]/); if (pos == -1) return text; return text.substring(0, pos); }
+function getSubstrX(text) {
+    let pos = text.search(/[x]/); if (pos == -1) return text; return text.substring(0, pos);
+}
 
 
+/**
+ * analyzed and calculate the property of the thread
+ * still to implement: Pg, Fg, BS
+ * where BS count be calculated with the same function like UN
+ * 
+ * @param {string} abmessung - string with thread description
+ * @returns - JSON with propertys type, diameter and pitch
+ */
 function getThreadPropertys(abmessung) {
     const astr = abmessung.trim();
     const typeString = getThreadType(astr.substring(0, astr.indexOf(' ')));
     let propertyString = astr.substring(astr.indexOf(' ')).trim();
     if (/[0-9]/.test(typeString[0])) { return undefined; }
-    //------------------------------------------------------------------------------------------------------------------------
-    // Pg
-    // Fg
-    // BS
-    // FÜR BS geht vielleicht auch UN
-    //------------------------------------------------------------------------------------------------------------------------
-    if (typeString == 'UN')  return getThreadPropertysUN(propertyString, typeString);
+    if (typeString == 'UN') return getThreadPropertysUN(propertyString, typeString);
     if (typeString == 'R' || typeString == 'G') return getThreadPropertysRG(propertyString, typeString)
     if (typeString == 'M' || typeString == 'Tr') return getThreadPropertysM_TR(propertyString, typeString);
     return undefined;
 }
 
-
+/**
+ * adjusted the threadtype, returns '' when thread type not know
+ * 
+ * @param {string} typeString - string with the begin of thread descrition
+ * @returns - the adjusted threadtype characters
+ */
 function getThreadType(typeString) {
     const startStrings = ['UN', 'M', 'BS'];
     for (let index = 0; index < startStrings.length; index++) {
@@ -175,6 +188,13 @@ function getThreadType(typeString) {
 }
 
 
+/**
+ * get the threadproperty for JSON for UN thread, if can be calculated or null
+ * 
+ * @param {string} propertyStr - thread propertystring
+ * @param {string} type - thread type
+ * @returns 
+ */
 function getThreadPropertysM_TR(propertyStr, type) {
     let diameter = 0;
     let pitch = 0;
@@ -195,6 +215,13 @@ function getThreadPropertysM_TR(propertyStr, type) {
 }
 
 
+/**
+ * get the threadproperty for JSON for R or G thread,  if can be calculated or null
+ * 
+ * @param {string} propertyStr - thread propertystring
+ * @param {string} type - thread type
+ * @returns - threadproperty JSON with type, diameter and pitch
+ */
 function getThreadPropertysRG(propertyStr, type) {
     let diameter = 0;
     let propertySubString = getSubstrHS(propertyStr);
