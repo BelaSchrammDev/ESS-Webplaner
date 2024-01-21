@@ -189,7 +189,7 @@ function getThreadType(typeString) {
 
 
 /**
- * get the threadproperty for JSON for UN thread, if can be calculated or null
+ * get the threadproperty for JSON for Tr thread, if can be calculated or null
  * 
  * @param {string} propertyStr - thread propertystring
  * @param {string} type - thread type
@@ -233,6 +233,13 @@ function getThreadPropertysRG(propertyStr, type) {
 }
 
 
+/**
+ * get the threadproperty for JSON for UN thread,  if can be calculated or null
+ * 
+ * @param {string} propertyStr - thread propertystring
+ * @param {string} type - thread type
+ * @returns - threadproperty JSON with type, diameter and pitch
+ */
 function getThreadPropertysUN(propertyStr, type) {
     let diameter = 0;
     let propertySubString = getSubstrMinus(propertyStr);
