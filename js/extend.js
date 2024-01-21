@@ -87,7 +87,7 @@ function extendABMESSUNG(element) {
 }
 
 
-const threatPitchM = {
+const threatPitchM_Regular = {
     4: 0.7,
     4.5: 0.75,
     5: 0.8,
@@ -138,76 +138,101 @@ const threatDiameterRG = {
 }
 
 
+function getSubstrHS(text) { let pos = text.search(/[\s-]/); if (pos == -1) return text; return text.substring(0, pos); }
+
+
+function getSubstrMinus(text) { let pos = text.search(/[-]/); if (pos == -1) return text; return text.substring(0, pos); }
+
+
+function getSubstrX(text) { let pos = text.search(/[x]/); if (pos == -1) return text; return text.substring(0, pos); }
+
+
 function getThreadPropertys(abmessung) {
-    //------------------------------------------------------------------------------------------------------------------------
-    function getSubstrHS(text) { let pos = text.search(/[\s-]/); if (pos == -1) return text; return text.substring(0, pos); }
-    function getSubstrMinus(text) { let pos = text.search(/[-]/); if (pos == -1) return text; return text.substring(0, pos); }
-    function getSubstrX(text) { let pos = text.search(/[x]/); if (pos == -1) return text; return text.substring(0, pos); }
-    //------------------------------------------------------------------------------------------------------------------------
-    let threadPropertys = new Object();
     const astr = abmessung.trim();
-    threadPropertys.type = astr.substring(0, astr.indexOf(' '));
-    if (threadPropertys.type.startsWith('UN')) threadPropertys.type = 'UN';
-    if (threadPropertys.type.startsWith('BS')) threadPropertys.type = 'BS';
-    if (threadPropertys.type.startsWith('M')) threadPropertys.type = 'M';
-    let propertyStr = astr.substring(astr.indexOf(' ')).trim();
-    //------------------------------------------------------------------------------------------------------------------------
-    // unbekanntes Gewinde
-    if (/[0-9]/.test(threadPropertys.type[0])) { return undefined; }
+    const typeString = getThreadType(astr.substring(0, astr.indexOf(' ')));
+    let propertyString = astr.substring(astr.indexOf(' ')).trim();
+    if (/[0-9]/.test(typeString[0])) { return undefined; }
     //------------------------------------------------------------------------------------------------------------------------
     // Pg
     // Fg
     // BS
     // FÜR BS geht vielleicht auch UN
     //------------------------------------------------------------------------------------------------------------------------
-    if (threadPropertys.type == 'UN') {
-        let propertySubString = getSubstrMinus(propertyStr);
-        if (propertySubString.includes('/')) {
-            let factors = propertySubString.trim().split('/');
-            if (factors.length > 1) {
-                let firstFac = +factors[0];
-                let secondFac = +factors[1];
-                if (factors[0].includes(' ')) {
-                    let firstFactors = factors[0].split(' ');
-                    firstFac = +firstFactors[1];
-                    if (firstFactors[0] == '1') firstFac += secondFac;
-                    if (firstFactors[0] == '2') firstFac += secondFac * 2;
-                }
-                threadPropertys.diameter = (25.4 / secondFac * firstFac).toFixed(2);
-            }
-        }
-        else if (propertySubString == '1') threadPropertys.diameter = 25.4;
-        else if (propertySubString.startsWith('0.') || propertySubString.startsWith('1.')) {
-            threadPropertys.diameter = (25.4 * parseFloat(propertySubString)).toFixed(2);
-        }
-        else return undefined;
-        propertySubString = getSubstrHS(propertyStr.substring(propertyStr.indexOf('-') + 1));
-        threadPropertys.pitch = (25.4 / propertySubString).toFixed(4);
+    if (typeString == 'UN')  return getThreadPropertysUN(propertyString, typeString);
+    if (typeString == 'R' || typeString == 'G') return getThreadPropertysRG(propertyString, typeString)
+    if (typeString == 'M' || typeString == 'Tr') return getThreadPropertysM_TR(propertyString, typeString);
+    return undefined;
+}
+
+
+function getThreadType(typeString) {
+    const startStrings = ['UN', 'M', 'BS'];
+    for (let index = 0; index < startStrings.length; index++) {
+        const chars = startStrings[index];
+        if (typeString.startsWith(chars)) return chars;
     }
-    else if (threadPropertys.type == 'R' || threadPropertys.type == 'G') {
+    return typeString;
+}
+
+
+function getThreadPropertysM_TR(propertyStr, type) {
+    let diameter = 0;
+    let pitch = 0;
+    propertyStr = propertyStr.replaceAll(',', '.');
+    propertyStr = propertyStr.replaceAll('SK', ' ');
+    propertyStr = propertyStr.replaceAll('Sk', ' ');
+    if (propertyStr.includes('x')) {
+        diameter = getSubstrX(propertyStr);
+        pitch = getSubstrHS(propertyStr.substring(propertyStr.indexOf('x') + 1));
+    }
+    else {
         let propertySubString = getSubstrHS(propertyStr);
-        if (threatDiameterRG[propertySubString]) threadPropertys.diameter = threatDiameterRG[propertySubString];
-        else threadPropertys.diameter = '-?-';
-        if (threatPitchRG[propertySubString]) threadPropertys.pitch = threatPitchRG[propertySubString];
-        else threadPropertys.pitch = '-?-';
+        if (threatPitchM_Regular[propertySubString]) pitch = threatPitchM_Regular[propertySubString];
+        else pitch = '-?-';
+        diameter = propertySubString;
     }
-    else if (threadPropertys.type == 'M' || threadPropertys.type == 'Tr') {
-        propertyStr = propertyStr.replaceAll(',', '.');
-        propertyStr = propertyStr.replaceAll('SK', ' ');
-        propertyStr = propertyStr.replaceAll('Sk', ' ');
-        if (propertyStr.includes('x')) {
-            threadPropertys.diameter = getSubstrX(propertyStr);
-            threadPropertys.pitch = getSubstrHS(propertyStr.substring(propertyStr.indexOf('x') + 1));
+    return { type, diameter, pitch }
+}
+
+
+function getThreadPropertysRG(propertyStr, type) {
+    let diameter = 0;
+    let propertySubString = getSubstrHS(propertyStr);
+    if (threatDiameterRG[propertySubString]) diameter = threatDiameterRG[propertySubString];
+    else diameter = '-?-';
+    if (threatPitchRG[propertySubString]) pitch = threatPitchRG[propertySubString];
+    else pitch = '-?-';
+    return { type, diameter, pitch }
+}
+
+
+function getThreadPropertysUN(propertyStr, type) {
+    let diameter = 0;
+    let propertySubString = getSubstrMinus(propertyStr);
+    if (propertySubString.includes('/')) {
+        let factors = propertySubString.trim().split('/');
+        if (factors.length > 1) {
+            let firstFac = +factors[0];
+            let secondFac = +factors[1];
+            if (factors[0].includes(' ')) {
+                let firstFactors = factors[0].split(' ');
+                firstFac = +firstFactors[1];
+                if (firstFactors[0] == '1') firstFac += secondFac;
+                if (firstFactors[0] == '2') firstFac += secondFac * 2;
+            }
+            diameter = (25.4 / secondFac * firstFac).toFixed(2);
         }
-        else {
-            let propertySubString = getSubstrHS(propertyStr);
-            if (threatPitchM[propertySubString]) threadPropertys.pitch = threatPitchM[propertySubString];
-            else threadPropertys.pitch = '-?-';
-            threadPropertys.diameter = propertySubString;
-        }
+    }
+    else if (propertySubString == '1') diameter = 25.4;
+    else if (propertySubString.startsWith('0.') || propertySubString.startsWith('1.')) {
+        diameter = (25.4 * parseFloat(propertySubString)).toFixed(2);
     }
     else return undefined;
-    return threadPropertys;
+
+    let pitch = 0;
+    propertySubString = getSubstrHS(propertyStr.substring(propertyStr.indexOf('-') + 1));
+    pitch = (25.4 / propertySubString).toFixed(4);
+    return { type, diameter, pitch }
 }
 
 
