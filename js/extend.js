@@ -80,9 +80,9 @@ function extendABMESSUNG(element) {
                 element.ABMESSUNG_PUR = abmessung.substring(abmessung.indexOf(' ') + 1);
             }
         }
-	    else {
+        else {
             element.ABMESSUNG_PUR = abmessung;
-	    }
+        }
     }
 }
 
@@ -178,7 +178,7 @@ function getThreadPropertys(abmessung) {
         }
         else if (propertySubString == '1') threadPropertys.diameter = 25.4;
         else if (propertySubString.startsWith('0.') || propertySubString.startsWith('1.')) {
-            threadPropertys.diameter = (25.4 / parseFloat(propertySubString)).toFixed(2);
+            threadPropertys.diameter = (25.4 * parseFloat(propertySubString)).toFixed(2);
         }
         else return undefined;
         propertySubString = getSubstrHS(propertyStr.substring(propertyStr.indexOf('-') + 1));
@@ -213,6 +213,7 @@ function getThreadPropertys(abmessung) {
 
 function extendNENNDURCHMESSER_STEIGUNG(element) {
     if (element.ABMESSUNG_PUR) {
+        if (element.NUMMER == '02312917') debugger;
         setGewindeTypePropertys(element, getThreadPropertys(element.ABMESSUNG_PUR));
     }
 }
