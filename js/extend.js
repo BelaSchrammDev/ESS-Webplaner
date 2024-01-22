@@ -227,7 +227,7 @@ function getThreadType(typeString) {
  * 
  * @param {string} propertyStr - thread propertystring
  * @param {string} type - thread type
- * @returns 
+ * @returns - threadproperty
  */
 function getThreadPropertysM_TR(propertyStr, type) {
     let diameter = 0;
