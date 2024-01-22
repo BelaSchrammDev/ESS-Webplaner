@@ -1,3 +1,6 @@
+/**
+ * extend the orderJSON with usefull propertys for later using on multiple views
+ */
 function extendTable() {
     for (let index = 0; index < tableCPU.length; index++) {
         const element = tableCPU[index];
@@ -15,11 +18,22 @@ function extendTable() {
 }
 
 
+/**
+ * set the week of the ROHTEIL Date
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendROHTEIL_KW(element) {
     element.ROHTEILWOCHE = getWeekNumber(element.ROHTEILDATE);
 }
 
 
+/**
+ * get the week of a Date
+ * 
+ * @param {Date} sourceDate - Date from which the calendar week is calculated
+ * @returns number of the week
+ */
 function getWeekNumber(sourceDate) {
     let date = new Date(sourceDate);
     let dayNum = date.getUTCDay() - 3;
@@ -30,6 +44,11 @@ function getWeekNumber(sourceDate) {
 };
 
 
+/**
+ * set the LDBOHRDURCHMESSER of the order
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendLaeppBohr(element) {
     if (element['threadPropertys']) {
         let thProp = element.threadPropertys;
@@ -44,11 +63,21 @@ function extendLaeppBohr(element) {
 }
 
 
+/**
+ * copy the KENNWORT to KENNWORT_CPU for later using
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendKENNWORT(element) {
     element.KENNWORT_CPU = element['KENNWORT'];
 }
 
 
+/**
+ * set the status of the order in which it is currently stored
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendSTATUS(element) {
     const tableKennwort = {
         "S L LD H R": "Rohlinge",
@@ -65,6 +94,11 @@ function extendSTATUS(element) {
 }
 
 
+/**
+ * set the ROHTEILDURCHMESSER and APMESSUNG_PUR property of the orderJSON
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendABMESSUNG(element) {
     const realRohteilDiameters = ['22', '32', '38', '45', '53', '63', '71',];
     if (element['ABMESSUNG']) {
@@ -270,29 +304,33 @@ function getThreadPropertysUN(propertyStr, type) {
 }
 
 
+/**
+ * set the threadproperty of the elemnt
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendNENNDURCHMESSER_STEIGUNG(element) {
     if (element.ABMESSUNG_PUR) {
-        if (element.NUMMER == '02312917') debugger;
-        setGewindeTypePropertys(element, getThreadPropertys(element.ABMESSUNG_PUR));
+        let propertys = getThreadPropertys(element.ABMESSUNG_PUR);
+        if (propertys) {
+            element.threadPropertys = propertys;
+            element.GEWINDETYPE = propertys.type;
+            element.NENNDURCHMESSER = propertys.diameter ? +propertys.diameter : '??';
+            element.STEIGUNG = propertys.pitch ? +propertys.pitch : '??';
+        } else {
+            element.GEWINDETYPE = '???';
+            element.NENNDURCHMESSER = '??';
+            element.STEIGUNG = '??';
+        }
     }
 }
 
 
-function setGewindeTypePropertys(element, propertys) {
-    if (propertys) {
-        element.threadPropertys = propertys;
-        element.GEWINDETYPE = propertys.type;
-        element.NENNDURCHMESSER = propertys.diameter ? +propertys.diameter : '??';
-        element.STEIGUNG = propertys.pitch ? +propertys.pitch : '??';
-    }
-    else {
-        element.GEWINDETYPE = '???';
-        element.NENNDURCHMESSER = '??';
-        element.STEIGUNG = '??';
-    }
-}
-
-
+/**
+ * set the LÄPPDORNROHMATERIAL property
+ * 
+ * @param {JSON} element - orderJSON to change
+ */
 function extendLAEPPDORN_RawMaterial(element) {
     if (element['threadPropertys'] && element.threadPropertys['diameter']) {
         element.LDROHDURCHMESSER = 'Klein';
@@ -303,6 +341,12 @@ function extendLAEPPDORN_RawMaterial(element) {
 }
 
 
+/**
+ * parse a string to a Date Object and return this
+ * 
+ * @param {string} dateString - string to parse to a valid datetime
+ * @returns - Date Object or default 1. Jan. 2022
+ */
 function getDateFromGER(dateString) {
     const dateStrings = dateString.split('.');
     if (dateStrings.length > 2) {
