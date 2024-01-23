@@ -21,7 +21,7 @@ function extendTable() {
 /**
  * set the week of the ROHTEIL Date
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendROHTEIL_KW(element) {
     element.ROHTEILWOCHE = getWeekNumber(element.ROHTEILDATE);
@@ -31,8 +31,8 @@ function extendROHTEIL_KW(element) {
 /**
  * get the week of a Date
  * 
- * @param {Date} sourceDate - Date from which the calendar week is calculated
- * @returns number of the week
+ * @param {Date} sourceDate / Date from which the calendar week is calculated
+ * @returns {Number} number of the week
  */
 function getWeekNumber(sourceDate) {
     let date = new Date(sourceDate);
@@ -47,7 +47,7 @@ function getWeekNumber(sourceDate) {
 /**
  * set the LDBOHRDURCHMESSER of the order
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendLaeppBohr(element) {
     if (element['threadPropertys']) {
@@ -66,7 +66,7 @@ function extendLaeppBohr(element) {
 /**
  * copy the KENNWORT to KENNWORT_CPU for later using
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendKENNWORT(element) {
     element.KENNWORT_CPU = element['KENNWORT'];
@@ -76,7 +76,7 @@ function extendKENNWORT(element) {
 /**
  * set the status of the order in which it is currently stored
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendSTATUS(element) {
     const tableKennwort = {
@@ -97,7 +97,7 @@ function extendSTATUS(element) {
 /**
  * set the ROHTEILDURCHMESSER and APMESSUNG_PUR property of the orderJSON
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendABMESSUNG(element) {
     const realRohteilDiameters = ['22', '32', '38', '45', '53', '63', '71',];
@@ -192,8 +192,8 @@ function getSubstrX(text) {
  * still to implement: Pg, Fg, BS
  * where BS count be calculated with the same function like UN
  * 
- * @param {string} abmessung - string with thread description
- * @returns - JSON with propertys type, diameter and pitch
+ * @param {string} abmessung / string with thread description
+ * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
 function getThreadPropertys(abmessung) {
     const astr = abmessung.trim();
@@ -207,10 +207,10 @@ function getThreadPropertys(abmessung) {
 }
 
 /**
- * adjusted the threadtype, returns '' when thread type not know
+ * adjusted the threadtype, returns '' when thread type unknow
  * 
- * @param {string} typeString - string with the begin of thread descrition
- * @returns - the adjusted threadtype characters
+ * @param {string} typeString / string with the begin of thread descrition
+ * @returns {string} the adjusted threadtype characters
  */
 function getThreadType(typeString) {
     const startStrings = ['UN', 'M', 'BS'];
@@ -225,9 +225,9 @@ function getThreadType(typeString) {
 /**
  * get the threadproperty for JSON for Tr thread, if can be calculated or null
  * 
- * @param {string} propertyStr - thread propertystring
- * @param {string} type - thread type
- * @returns - threadproperty
+ * @param {string} propertyStr / thread propertystring
+ * @param {string} type / thread type
+ * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
 function getThreadPropertysM_TR(propertyStr, type) {
     let diameter = 0;
@@ -252,9 +252,9 @@ function getThreadPropertysM_TR(propertyStr, type) {
 /**
  * get the threadproperty for JSON for R or G thread,  if can be calculated or null
  * 
- * @param {string} propertyStr - thread propertystring
- * @param {string} type - thread type
- * @returns - threadproperty JSON with type, diameter and pitch
+ * @param {string} propertyStr / thread propertystring
+ * @param {string} type / thread type
+ * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
 function getThreadPropertysRG(propertyStr, type) {
     let diameter = 0;
@@ -270,9 +270,9 @@ function getThreadPropertysRG(propertyStr, type) {
 /**
  * get the threadproperty for JSON for UN thread,  if can be calculated or null
  * 
- * @param {string} propertyStr - thread propertystring
- * @param {string} type - thread type
- * @returns - threadproperty JSON with type, diameter and pitch
+ * @param {string} propertyStr / thread propertystring
+ * @param {string} type / thread type
+ * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
 function getThreadPropertysUN(propertyStr, type) {
     let diameter = 0;
@@ -307,7 +307,7 @@ function getThreadPropertysUN(propertyStr, type) {
 /**
  * set the threadproperty of the elemnt
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendNENNDURCHMESSER_STEIGUNG(element) {
     if (element.ABMESSUNG_PUR) {
@@ -329,7 +329,7 @@ function extendNENNDURCHMESSER_STEIGUNG(element) {
 /**
  * set the LÄPPDORNROHMATERIAL property
  * 
- * @param {JSON} element - orderJSON to change
+ * @param {Object} element / orderJSON to change
  */
 function extendLAEPPDORN_RawMaterial(element) {
     if (element['threadPropertys'] && element.threadPropertys['diameter']) {
@@ -343,9 +343,10 @@ function extendLAEPPDORN_RawMaterial(element) {
 
 /**
  * parse a string to a Date Object and return this
+ * or is this impossible then return 01/01/2022
  * 
- * @param {string} dateString - string to parse to a valid datetime
- * @returns - Date Object or default 1. Jan. 2022
+ * @param {string} dateString / string to parse to a valid datetime
+ * @returns {Date} Date Object
  */
 function getDateFromGER(dateString) {
     const dateStrings = dateString.split('.');

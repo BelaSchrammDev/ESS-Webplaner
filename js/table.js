@@ -30,6 +30,11 @@ let tableCPU = [];
 let tableCPU_Fields = [];
 
 
+/**
+ * load the json file
+ * 
+ * @param {HTMLElement} inputField Inputfield:File from onclick function
+ */
 function loadTable(inputField) {
     const jsonTableObject = inputField.files[0];
     dateCPUTable = new Date(jsonTableObject.lastModified);
@@ -42,6 +47,11 @@ function loadTable(inputField) {
 }
 
 
+/**
+ * parsing the table
+ * 
+ * @param {string} tableJSON - string with the json object
+ */
 function parseTable(tableJSON) {
     document.getElementById('filters').classList.remove('hide');
     document.getElementById('filters').classList.add('filters');
@@ -55,6 +65,11 @@ function parseTable(tableJSON) {
 }
 
 
+/**
+ * save the original fields for later use
+ * 
+ * @param {Object} element - orderJSON befor extended
+ */
 function getOriginalCPU_Fields(element) {
     tableCPU_Fields = Object.keys(element);
 }

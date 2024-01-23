@@ -354,6 +354,42 @@ const renderTypes = {
 }
 
 
+/**
+ * compare the field of the element with the value
+ * only for KUNDENAUFTRÄGE
+ * 
+ * @param {Object} element orderJSON
+ * @param {string} field fieldname to compare with element
+ * @param {string} value value to compare with the element
+ * @returns {boolean} true if equal, false is not equal
+ */
+function isFieldEqualKA(element, field, value) {
+    if (element.ZU_AUFTRAG == '00000000') return false;
+    return element[field] ? element[field] == value : false;
+}
+
+
+/**
+ * compare the field of the element with the value
+ * 
+ * @param {Object} element orderJSON
+ * @param {string} field fieldname to compare with element
+ * @param {string} value value to compare with the element
+ * @returns {boolean} true if equal, false is not equal
+ */
+function isFieldEqual(element, field, value) {
+    return element[field] ? element[field] == value : false;
+}
+
+
+/**
+ * compare a field/value pair array with the elementObject
+ * 
+ * @param {Object} element orderJSON 
+ * @param {string[]} fields fieldnames to compare with element
+ * @param {string[]} values values to compare with element
+ * @returns {boolean} true if all equal, false is one not equal
+ */
 function isFieldsEqualArray(element, fields, values) {
     let equal = [];
     for (let index = 0; index < fields.length; index++) {
@@ -364,17 +400,15 @@ function isFieldsEqualArray(element, fields, values) {
     return equal.includes(false) ? false : true;
 }
 
-function isFieldEqualKA(element, field, value) {
-    if (element.ZU_AUFTRAG == '00000000') return false;
-    return element[field] ? element[field] == value : false;
-}
 
-
-function isFieldEqual(element, field, value) {
-    return element[field] ? element[field] == value : false;
-}
-
-
+/**
+ * compare a field/value pair array with the elementObject
+ * 
+ * @param {Object} element orderJSON 
+ * @param {string[]} fields fieldnames to compare with element
+ * @param {string[]} values values to compare with element
+ * @returns {boolean} true if all not equal, false is one equal
+ */
 function isFieldNotEqualArray(element, field, noTypes) {
     return !noTypes.includes(element[field]);
 }
