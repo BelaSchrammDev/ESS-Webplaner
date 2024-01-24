@@ -1,17 +1,44 @@
+/**
+ * variables definition
+ */
 let editGT_ID = -1;
 let showLinesWeek = 0;
 
 
+/**
+ * variables for the grouping feature
+ */
+let renderGroupingState = 0;
+let lastGroupingIndex = -1;
+const renderGroupingColors = ['lightgray', 'white'];
+
+
+/**
+ * render the listtype string 
+ * 
+ * @param {string} listType string to render in infofield
+ */
 function renderListType(listType) {
     document.getElementById('list_type').innerHTML = listType;
 }
 
 
+/**
+ * show the count of rendered order
+ * 
+ * @param {Number} lineCounter number of rendered orders
+ */
 function renderShowLines(lineCounter) {
     document.getElementById('num_filter').innerHTML = `${lineCounter} von ${tableCPU.length} Aufträgen`;
 }
 
 
+/**
+ * returns the HTML code for the headerrow of the table
+ * 
+ * @param {string[]} tableHeadKeys array of the headerdescription
+ * @returns {string} tablerow HTML string
+ */
 function renderTableHeadline(tableHeadKeys) {
     let headerContent = '';
     for (let index = 0; index < tableHeadKeys.length; index++) {
@@ -20,27 +47,32 @@ function renderTableHeadline(tableHeadKeys) {
     return `<tr>${headerContent}</tr>`;
 }
 
-const specialFieldRenderer = {
-    "KENNWORT": renderKENNWORT,
-    "NUMMER": renderNUMMER,
-    "ABMESSUNG_PUR": renderABMESSUNG,
-    "LDBOHRDURCHMESSER": renderLDBohr,
-    "LDROHDURCHMESSER": renderLDRoh,
-    "GEWINDETYPE": renderGewType,
-}
 
-
+/**
+ * specialfieldrenderer for the threadtype field ['GEWINDETYPE']
+ * get the HTML code of the threadtype field,
+ * if unknow then with a button to input the threadpropertys manually
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @param {Object} element orderJSON object
+ * @returns {string} HTML code of the td element
+ */
 function renderGewType(index, element) {
     let type = element.GEWINDETYPE ? element.GEWINDETYPE : '';
     let content = type;
     if (type == '???') {
-        content = `<button onClick="openGewindeChangeDialog(${index})" style="background-color: orange;">${type}</button>`
+        content = `<button onClick="openThreadChangeDialog(${index})" style="background-color: orange;">${type}</button>`
     }
     return `<td>${content}</td>`;
 }
 
 
-function openGewindeChangeDialog(index) {
+/**
+ * show the ThreadChangeOverlay
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ */
+function openThreadChangeDialog(index) {
     editGT_ID = index;
     document.getElementById('gewinde_type').value = '';
     document.getElementById('gewinde_diameter').value = '';
@@ -49,12 +81,18 @@ function openGewindeChangeDialog(index) {
 }
 
 
+/**
+ * function is executed when the cancel button is pressed
+ */
 function changeGT_cancel() {
     editGT_ID = -1;
     document.getElementById('changegewindetype').classList.add('hide');
 }
 
 
+/**
+ * function is executed when the ok button is pressed
+ */
 function changeGT_confirm() {
     let gType = document.getElementById('gewinde_type').value;
     let gDiameter = document.getElementById('gewinde_diameter').value;
@@ -79,6 +117,16 @@ function changeGT_confirm() {
 }
 
 
+/**
+ * specialfieldrenderer for the LDROHDURCHMESSER field with backgroundcolor settings
+ * and onclick action to change the LDROHDURCHMESSER to unknow ['?']
+ * or a dropdown list to select the right value.
+ * possible values are 'Mittel', 'Groß' and 'Klein', or, if unknow '?'
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @param {Object} element orderJSON object
+ * @returns {string} HTML code as td element for the table
+ */
 function renderLDRoh(index, element) {
     let innerHtml = element.LDROHDURCHMESSER;
     let action = '';
@@ -88,6 +136,12 @@ function renderLDRoh(index, element) {
 }
 
 
+/**
+ * get the background-color style code for the LDROHDURCHMESSER field
+ * 
+ * @param {string} tag LDROHDURCHMESSER type as string, can be 'Mittel', 'Groß' and 'Klein', or, if unknow '?'
+ * @returns {string} background-color style string with the matching colorcode
+ */
 function getColorLDRohDiameter(tag) {
     let color = 'orange';
     if (tag == 'Mittel') color = 'yellow';
@@ -97,6 +151,13 @@ function getColorLDRohDiameter(tag) {
 }
 
 
+/**
+ * get the HTML code for a dropdown list with possible values
+ * 'Mittel', 'Groß' and 'Klein', or, if unknow '?'
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @returns {string} HTML code for the dropdown list
+ */
 function getLDRohSelect(index) {
     return `
     <label for="select_roh_diameter_${index}">Roh...</label>
@@ -110,6 +171,12 @@ function getLDRohSelect(index) {
 }
 
 
+/**
+ * function is executed when the LDROHDURCHMESSER field in the table is pressed
+ * the value is set to unknow
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ */
 function setLDRohUnknow(index) {
     const element = tableCPU[index];
     element.LDROHDURCHMESSER = '?';
@@ -117,6 +184,11 @@ function setLDRohUnknow(index) {
 }
 
 
+/**
+ * function is executed when the LDROHDURCHMESSER dropdown list is changed
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ */
 function changeLDRohSelect(index) {
     const element = tableCPU[index];
     const newLDRoh = document.getElementById('select_roh_diameter_' + index).value;
@@ -125,6 +197,14 @@ function changeLDRohSelect(index) {
 }
 
 
+/**
+ * specialfieldrenderer for the NUMMER field, this is the unique ordernumber
+ * she gives the HTML code for a td element back
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @param {Object} element JSON order object 
+ * @returns {string} HTML code as td element
+ */
 function renderNUMMER(index, element) {
     let color = '';
     if (element['ZU_AUFTRAG']) {
@@ -136,6 +216,9 @@ function renderNUMMER(index, element) {
 }
 
 
+/**
+ * possible values of the field KENNWORT
+ */
 const tableKENNWORTconditions = [
     "",
     "S",
@@ -146,7 +229,12 @@ const tableKENNWORTconditions = [
 ]
 
 
-function removeTagFromKENNWORT(tableElement, index) {
+/**
+ * remove one KENNWORT segment from the string and set the new value to the element
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ */
+function removeTagFromKENNWORT(index) {
     const element = tableCPU[index];
     const kennwort = element.KENNWORT;
     if (tableKENNWORTconditions.includes(kennwort)) {
@@ -160,7 +248,12 @@ function removeTagFromKENNWORT(tableElement, index) {
 }
 
 
-function addTagFromKENNWORT(tableElement, index) {
+/**
+ * add one KENNWORT segment to the string and set the new value to the element
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ */
+function addTagFromKENNWORT(index) {
     const element = tableCPU[index];
     const kennwort = element.KENNWORT;
     if (tableKENNWORTconditions.includes(kennwort)) {
@@ -174,35 +267,67 @@ function addTagFromKENNWORT(tableElement, index) {
 }
 
 
+/**
+ * specialfieldrenderer for the field ABMESSUNG
+ * 
+ * @param {Number} index index of the orderJSON in the array,
+ *                 is not actually needet, but the render function can only pass these parameters
+ * @param {Object} element orderJSON object
+ * @returns {string} HTML code as a td element
+ */
 function renderABMESSUNG(index, element) {
     return `<td style="text-align: left;padding-left: 10px;">${element.ABMESSUNG_PUR ? element.ABMESSUNG_PUR : ''}</td>`;
 }
 
 
+/**
+ * specialfieldrenderer for the field LDBOHRDURCHMESSER
+ * 
+ * @param {Number} index index of the orderJSON in the array,
+ *                 is not actually needet, but the render function can only pass these parameters
+ * @param {Object} element orderJSON object
+ * @returns {string} HTML code as a td element
+ */
 function renderLDBohr(index, element) {
     return `<td style="text-align: left;padding-left: 5px;">${element.LDBOHRDURCHMESSER ? element.LDBOHRDURCHMESSER : ''}</td>`;
 }
 
 
+/**
+ * specialfieldrenderer for the field KENNWORT, with functionality for add and remove segments from the KENNWORT field
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @param {Object} element orderJSON object
+ * @returns {string} HTML code as a td element
+ */
 function renderKENNWORT(index, element) {
     let fieldKENNWORT = element.KENNWORT;
     let currentIndex = tableKENNWORTconditions.findIndex((e) => { return fieldKENNWORT == e; });
     let fieldHTML = fieldKENNWORT;
-    if (currentIndex > 0) fieldHTML += `<button onClick="removeTagFromKENNWORT(this,${index})">&#x2770;</button>`;
-    if (currentIndex < tableKENNWORTconditions.length - 1) fieldHTML += `<button onClick="addTagFromKENNWORT(this,${index})">&#x2771;</button>`;
+    if (currentIndex > 0) fieldHTML += `<button onClick="removeTagFromKENNWORT(${index})">&#x2770;</button>`;
+    if (currentIndex < tableKENNWORTconditions.length - 1) fieldHTML += `<button onClick="addTagFromKENNWORT(${index})">&#x2771;</button>`;
     return `<td style="text-align: left;" id="kennwort_${index}">${fieldHTML}</td>`;
 }
 
 
+/**
+ * defaultrenderer for a fieldvalue
+ * 
+ * @param {string} fieldValue string to render in the td element 
+ * @returns {string} HTML code as td element for the table
+ */
 function renderDefault(fieldValue) {
     return `<td>${fieldValue}</td>`;
 }
 
 
-let renderGroupingState = 0;
-let lastGroupingIndex = -1;
-const renderGroupingColors = ['lightgray', 'white'];
-
+/**
+ * get the HTML code of the td element with the corresponding grouping background-color
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @param {string} field field that will be grouping
+ * @returns {string} HTML code with grouping color settings
+ */
 function renderGrouping(index, field) {
     if (lastGroupingIndex >= 0 && (tableCPU[lastGroupingIndex][field] != tableCPU[index][field])) {
         renderGroupingState = +!renderGroupingState;
@@ -212,7 +337,24 @@ function renderGrouping(index, field) {
 }
 
 
+/**
+ * render a complete line of a order
+ * 
+ * @param {Number} index index of the orderJSON in the array
+ * @param {Object} element order as JSON Object
+ * @param {string[]} tableHeadKeys array of fields to be rendered
+ * @returns {string} HTML code of the complete line to be rendered
+ */
 function renderTableLine(index, element, tableHeadKeys) {
+    // list of special field renderfunctions, key is the field
+    const specialFieldRenderer = {
+        "KENNWORT": renderKENNWORT,
+        "NUMMER": renderNUMMER,
+        "ABMESSUNG_PUR": renderABMESSUNG,
+        "LDBOHRDURCHMESSER": renderLDBohr,
+        "LDROHDURCHMESSER": renderLDRoh,
+        "GEWINDETYPE": renderGewType,
+    }
     let rowContent = '';
     for (let x = 0; x < tableHeadKeys.length; x++) {
         const key = tableHeadKeys[x];
@@ -228,7 +370,6 @@ function renderTableLine(index, element, tableHeadKeys) {
 function renderWeekCellInfo(week, rohDM, minrohDM) {
     function isRohteilState(element) { return element.KENNWORT == 'S L LD H R'; }
     function isRohteilWeek(element, week) { return element.ROHTEILWOCHE == week; }
-    function isRohteilDM(element, diameter) { return element.ROHTEILDURCHMESSER ? element.ROHTEILDURCHMESSER == `&Oslash;${diameter}` : false; }
     function isRohteilDMRange(element, diameter, mindiameter) {
         const pureDiameter = element.ROHTEILDURCHMESSER ? +element.ROHTEILDURCHMESSER.substring(8) : 0;
         return pureDiameter <= diameter && pureDiameter > mindiameter;
@@ -260,8 +401,29 @@ function renderWeekCellInfo(week, rohDM, minrohDM) {
 
 
 function renderRohDMWeek() {
-    const renderRows = ['0', '22', '32', '38', '45', '53', '63', '71'];
-    const maxWeekShows = 6;
+    const diameterArray = ['22', '32', '38', '45', '53', '63', '71'];
+    let weekNumbers = getWeekNumberArray(6);
+    let tabelInnerHTML = '<th></th>';
+    weekNumbers.forEach((diameter) => tabelInnerHTML += `<th>${diameter}</th>`)
+    showLinesWeek = 0;
+    for (let index = 0; index < diameterArray.length; index++) {
+        tabelInnerHTML += renderWeekRow(diameterArray[index], weekNumbers, diameterArray[index - 1]);
+    }
+    document.getElementById('list_content').innerHTML = `<table><tbody class="table_week">${tabelInnerHTML}</tbody></table>`;
+    return showLinesWeek;
+}
+
+
+function renderWeekRow(rohDM, weekNumbers, diameter) {
+    let rowHTML = `<td>&Oslash;${rohDM}</td>`;
+    for (let index = 0; index < weekNumbers.length; index++) {
+        rowHTML += renderWeekCellInfo(weekNumbers[index], rohDM, diameter);
+    }
+    return `<tr>${rowHTML}</tr>`;
+}
+
+
+function getWeekNumberArray(maxWeekShows) {
     let weekNumbers = [];
     let datetimeNow = new Date(Date.now());
     datetimeNow.setDate(datetimeNow.getDate() - 14); // startweek
@@ -269,27 +431,7 @@ function renderRohDMWeek() {
         weekNumbers.push(getWeekNumber(datetimeNow));
         datetimeNow.setDate(datetimeNow.getDate() + 7);
     }
-    let tabelInnerHTML = '';
-    showLinesWeek = 0;
-
-    for (let index = 0; index < renderRows.length; index++) {
-        const rohDM = renderRows[index];
-        let headRow = '';
-        let firstCell = '';
-        if (rohDM == '0') firstCell = '<th></th>';
-        else firstCell = `<td>&Oslash;${rohDM}</td>`;
-        for (let wIndex = 0; wIndex < weekNumbers.length; wIndex++) {
-            let week = weekNumbers[wIndex];
-            if (rohDM == '0') {
-                headRow += `<th>${week}</th>`;
-            } else {
-                headRow += renderWeekCellInfo(week, rohDM, renderRows[index - 1]);
-            }
-        }
-        tabelInnerHTML += `<tr>${firstCell}${headRow}</tr>`;
-    }
-    document.getElementById('list_content').innerHTML = `<table><tbody class="table_week">${tabelInnerHTML}</tbody></table>`;
-    return showLinesWeek;
+    return weekNumbers;
 }
 
 
