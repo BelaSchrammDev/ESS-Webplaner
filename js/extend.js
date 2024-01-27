@@ -121,7 +121,7 @@ function extendABMESSUNG(element) {
 }
 
 
-const threatPitchM_Regular = {
+const threatMregular_Pitch = {
     4: 0.7,
     4.5: 0.75,
     5: 0.8,
@@ -146,29 +146,43 @@ const threatPitchM_Regular = {
 }
 
 
-const threatPitchRG = {
-    "1/16": 0.907,
-    "1/8": 0.907,
-    "1/4": 1.337,
-    "3/8": 1.337,
-    "1/2": 1.814,
-    "5/8": 1.814,
-    "3/4": 1.814,
-    "7/8": 1.814,
-    "1": 2.309,
-}
-
-
-const threatDiameterRG = {
-    "1/16": 6.84,
-    "1/8": 9.73,
-    "1/4": 13.16,
-    "3/8": 16.66,
-    "1/2": 20.95,
-    "5/8": 22.91,
-    "3/4": 26.44,
-    "7/8": 30.20,
-    "1": 33.25,
+const threatsRG = {
+    "1/16": {
+        "diameter": 6.84,
+        "pitch": 0.907
+    },
+    "1/8": {
+        "diameter": 9.73,
+        "pitch": 0.907
+    },
+    "1/4": {
+        "diameter": 13.16,
+        "pitch": 1.337
+    },
+    "3/8": {
+        "diameter": 16.66,
+        "pitch": 1.337
+    },
+    "1/2": {
+        "diameter": 20.95,
+        "pitch": 1.814
+    },
+    "5/8": {
+        "diameter": 22.91,
+        "pitch": 1.814
+    },
+    "3/4": {
+        "diameter": 26.44,
+        "pitch": 1.814
+    },
+    "7/8": {
+        "diameter": 30.20,
+        "pitch": 1.814
+    },
+    "1": {
+        "diameter": 33.25,
+        "pitch": 2.309
+    }
 }
 
 
@@ -239,11 +253,11 @@ function getThreadPropertysM_TR(propertyStr, type) {
         diameter = getSubstrX(propertyStr);
         pitch = getSubstrHS(propertyStr.substring(propertyStr.indexOf('x') + 1));
     }
-    else {
+    else if (type == 'M') {
         let propertySubString = getSubstrHS(propertyStr);
-        if (threatPitchM_Regular[propertySubString]) pitch = threatPitchM_Regular[propertySubString];
-        else pitch = '-?-';
         diameter = propertySubString;
+        if (threatMregular_Pitch[propertySubString]) pitch = threatMregular_Pitch[propertySubString];
+        else pitch = '-?-';
     }
     return { type, diameter, pitch }
 }
@@ -259,10 +273,10 @@ function getThreadPropertysM_TR(propertyStr, type) {
 function getThreadPropertysRG(propertyStr, type) {
     let diameter = 0;
     let propertySubString = getSubstrHS(propertyStr);
-    if (threatDiameterRG[propertySubString]) diameter = threatDiameterRG[propertySubString];
-    else diameter = '-?-';
-    if (threatPitchRG[propertySubString]) pitch = threatPitchRG[propertySubString];
-    else pitch = '-?-';
+    if (threatsRG[propertySubString]) {
+        diameter = threatsRG[propertySubString].diameter;
+        pitch = threatsRG[propertySubString].pitch;
+    }
     return { type, diameter, pitch }
 }
 
