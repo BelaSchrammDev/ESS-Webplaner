@@ -29,29 +29,33 @@
     <div id="list_content" class="list_content"></div>
     <div id="changegewindetype" class="changegewindetype hide">
         <div class="change_gt_innerbox">
-            <div class="change_gt_box">
-                <h2>Gewindetype ändern</h2>
-                <label for="gewinde_type">Gewindetype</label>
-                <select id="gewinde_type" name="gewinde_type">
-                    <option value="M">Metrisch</option>
-                    <option value="UN">UN</option>
-                    <option value="Tr">Trapez</option>
-                    <option value="R">R</option>
-                    <option value="FG">FG</option>
-                    <option value="Pg">Pg</option>
-                    <option value="ACME">ACME</option>
-                    <option value="W">W</option>
-                </select>
-                <label for="gewinde_diameter">Gewinde Nenndurchmesser</label>
-                <input type="number" name="gewinde_diameter" id="gewinde_diameter">
-                <label for="gewinde_pitch">Gewinde Steigung</label>
-                <input type="number" name="gewinde_pitch" id="gewinde_pitch">
-                <span>___________________________________________________</span>
-                <div class="change_gt_actions">
-                    <button onclick="changeGT_cancel()">Cancel</button>
-                    <button onclick="changeGT_confirm()">OK</button>
+            <form action="javascript:;" onsubmit="changeGT_confirm()">
+                <div class="change_gt_box">
+                    <h2>Gewindetype ändern</h2>
+                    <label for="gewinde_type">Gewindetype</label>
+                    <select required id="gewinde_type" name="gewinde_type">
+                        <option value="M">-?-</option>
+                        <option value="M">Metrisch</option>
+                        <option value="UN">UN</option>
+                        <option value="Tr">Trapez</option>
+                        <option value="R">R</option>
+                        <option value="FG">FG</option>
+                        <option value="Pg">Pg</option>
+                        <option value="ACME">ACME</option>
+                        <option value="W">W</option>
+                    </select>
+                    <label for="gewinde_diameter">Gewinde Nenndurchmesser</label>
+                    <input required type="number" step=".01" name="gewinde_diameter" id="gewinde_diameter">
+                    <label for="gewinde_pitch">Gewinde Steigung</label>
+                    <input required type="number" step=".01" name="gewinde_pitch" id="gewinde_pitch">
+                    <span>_______________________________</span>
+                    <div class="change_gt_actions">
+                        <button type="reset">Alles löschen</button>
+                        <button type="button" onclick="changeGT_cancel()">Cancel</button>
+                        <button>OK</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </body>

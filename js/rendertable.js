@@ -74,7 +74,7 @@ function renderGewType(index, element) {
  */
 function openThreadChangeDialog(index) {
     editGT_ID = index;
-    document.getElementById('gewinde_type').value = '';
+    document.getElementById('gewinde_type').selectedIndex = 0;
     document.getElementById('gewinde_diameter').value = '';
     document.getElementById('gewinde_pitch').value = '';
     document.getElementById('changegewindetype').classList.remove('hide');
@@ -121,7 +121,7 @@ function changeGT_confirm() {
  * specialfieldrenderer for the LDROHDURCHMESSER field with backgroundcolor settings
  * and onclick action to change the LDROHDURCHMESSER to unknow ['?']
  * or a dropdown list to select the right value.
- * possible values are 'Mittel', 'Groß' and 'Klein', or, if unknow '?'
+ * possible values are 'Mittel', 'Groß' and 'Klein', or if unknow, '?'
  * 
  * @param {Number} index index of the orderJSON in the array
  * @param {Object} element orderJSON object

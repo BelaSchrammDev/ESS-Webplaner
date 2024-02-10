@@ -325,17 +325,21 @@ function getThreadPropertysUN(propertyStr, type) {
  */
 function extendNENNDURCHMESSER_STEIGUNG(element) {
     if (element.ABMESSUNG_PUR) {
-        let propertys = getThreadPropertys(element.ABMESSUNG_PUR);
-        if (propertys) {
-            element.threadPropertys = propertys;
-            element.GEWINDETYPE = propertys.type;
-            element.NENNDURCHMESSER = propertys.diameter ? +propertys.diameter : '??';
-            element.STEIGUNG = propertys.pitch ? +propertys.pitch : '??';
-        } else {
-            element.GEWINDETYPE = '???';
-            element.NENNDURCHMESSER = '??';
-            element.STEIGUNG = '??';
-        }
+        setGewindeTypePropertys(element, getThreadPropertys(element.ABMESSUNG_PUR));
+    }
+}
+
+
+function setGewindeTypePropertys(element, propertys) {
+    if (propertys) {
+        element.threadPropertys = propertys;
+        element.GEWINDETYPE = propertys.type;
+        element.NENNDURCHMESSER = propertys.diameter ? +propertys.diameter : '??';
+        element.STEIGUNG = propertys.pitch ? +propertys.pitch : '??';
+    } else {
+        element.GEWINDETYPE = '???';
+        element.NENNDURCHMESSER = '??';
+        element.STEIGUNG = '??';
     }
 }
 
