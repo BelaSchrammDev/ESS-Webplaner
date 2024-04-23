@@ -182,6 +182,10 @@ const threatsRG = {
     "1": {
         "diameter": 33.25,
         "pitch": 2.309
+    },
+    "1 1/8": {
+        "diameter": 37.897,
+        "pitch": 2.309
     }
 }
 
@@ -219,6 +223,11 @@ function getThreadPropertys(abmessung) {
     if (typeString == 'M' || typeString == 'Tr') return getThreadPropertysM_TR(propertyString, typeString);
     return undefined;
 }
+
+// create a function to extract the characters M, Tr, R, G, UN from the string
+
+
+
 
 /**
  * adjusted the threadtype, returns '' when thread type unknow
@@ -272,10 +281,12 @@ function getThreadPropertysM_TR(propertyStr, type) {
  */
 function getThreadPropertysRG(propertyStr, type) {
     let diameter = 0;
-    let propertySubString = getSubstrHS(propertyStr);
-    if (threatsRG[propertySubString]) {
-        diameter = threatsRG[propertySubString].diameter;
-        pitch = threatsRG[propertySubString].pitch;
+    let pitch = 0;
+    for (key in threatsRG) {
+        if (propertyStr.includes(key)) {
+            diameter = threatsRG[key].diameter;
+            pitch = threatsRG[key].pitch;
+        }
     }
     return { type, diameter, pitch }
 }
