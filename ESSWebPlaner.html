@@ -10,9 +10,10 @@
     <script src="./js/rendertypes.js"></script>
     <script src="./js/table.js"></script>
     <script src="./js/extend.js"></script>
+    <script src="./js/main.js"></script>
 </head>
 
-<body onload="renderButtons()">
+<body onload="initESSPlaner()">
     <div id="file_choise" class="file_choise">
         <input type="file" name="Lade Tabelle" id="cpu_file" accept=".json" onchange="loadTable(this)">
     </div>
@@ -44,14 +45,20 @@
                         <option value="ACME">ACME</option>
                         <option value="W">W</option>
                     </select>
-                    <label for="gewinde_diameter">Gewinde Nenndurchmesser</label>
+                    <label for="gewinde_diameter">
+                        Gewinde Nenndurchmesser
+                    </label>
                     <input required type="number" step=".01" name="gewinde_diameter" id="gewinde_diameter">
                     <label for="gewinde_pitch">Gewinde Steigung</label>
                     <input required type="number" step=".01" name="gewinde_pitch" id="gewinde_pitch">
-                    <span>_______________________________</span>
+                    <span>
+                        _______________________________
+                    </span>
                     <div class="change_gt_actions">
                         <button type="reset">Alles löschen</button>
-                        <button type="button" onclick="changeGT_cancel()">Cancel</button>
+                        <button type="button" onclick="changeGT_cancel()">
+                            Cancel
+                        </button>
                         <button>OK</button>
                     </div>
                 </div>

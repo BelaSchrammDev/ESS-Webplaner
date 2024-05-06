@@ -186,7 +186,11 @@ const threatsRG = {
     "1 1/8": {
         "diameter": 37.897,
         "pitch": 2.309
-    }
+    },
+    "1 1/2": {
+        "diameter": 48.000,
+        "pitch": 2.309
+    },
 }
 
 
@@ -213,35 +217,34 @@ function getSubstrX(text) {
  * @param {string} abmessung string with thread description
  * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
-function getThreadPropertys(abmessung) {
-    const astr = abmessung.trim();
-    const typeString = getThreadType(astr.substring(0, astr.indexOf(' ')));
-    let propertyString = astr.substring(astr.indexOf(' ')).trim();
-    if (/[0-9]/.test(typeString[0])) { return undefined; }
-    if (typeString == 'UN') return getThreadPropertysUN(propertyString, typeString);
-    if (typeString == 'R' || typeString == 'G') return getThreadPropertysRG(propertyString, typeString)
-    if (typeString == 'M' || typeString == 'Tr') return getThreadPropertysM_TR(propertyString, typeString);
+function extractThreadPropertys(abmessung) {
+    const TYPE_ARRAY = [
+        { type: 'NPSM', matches: ['NPSM'], propertyExtraxtFunction: undefined },
+        { type: 'Tr', matches: ['Tr', 'TR'], propertyExtraxtFunction: getThreadPropertysM_TR },
+        { type: 'M', matches: ['M', 'MJ'], propertyExtraxtFunction: getThreadPropertysM_TR },
+        { type: 'R', matches: ['R'], propertyExtraxtFunction: getThreadPropertysRG },
+        { type: 'G', matches: ['G'], propertyExtraxtFunction: getThreadPropertysRG },
+        { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNS', 'UNR', 'UNC', 'UN'], propertyExtraxtFunction: getThreadPropertysUN },
+    ];
+    const clearedAbmessung = clearUnusedChars(abmessung);
+    for (let index = 0; index < TYPE_ARRAY.length; index++) {
+        for (let j = 0; j < TYPE_ARRAY[index].matches.length; j++) {
+            if (clearedAbmessung.includes(TYPE_ARRAY[index].matches[j])) {
+                if (!TYPE_ARRAY[index].propertyExtraxtFunction) return undefined;
+                const adjustAbmessung = clearedAbmessung.replace(TYPE_ARRAY[index].matches[j], '').trim();
+                return TYPE_ARRAY[index].propertyExtraxtFunction(adjustAbmessung, TYPE_ARRAY[index].type);
+            }
+        }
+    }
     return undefined;
 }
 
-// create a function to extract the characters M, Tr, R, G, UN from the string
 
-
-
-
-/**
- * adjusted the threadtype, returns '' when thread type unknow
- * 
- * @param {string} typeString string with the begin of thread descrition
- * @returns {string} the adjusted threadtype characters
- */
-function getThreadType(typeString) {
-    const startStrings = ['UN', 'M', 'BS'];
-    for (let index = 0; index < startStrings.length; index++) {
-        const chars = startStrings[index];
-        if (typeString.startsWith(chars)) return chars;
-    }
-    return typeString;
+function clearUnusedChars(abmessung) {
+    const CLEAR_CHARS = ['GR', 'AR', 'LH'];
+    let clearedAbmessung = abmessung;
+    CLEAR_CHARS.forEach(char => clearedAbmessung = clearedAbmessung.replace(char, ''));
+    return clearedAbmessung.trim();
 }
 
 
@@ -316,6 +319,8 @@ function getThreadPropertysUN(propertyStr, type) {
             diameter = (25.4 / secondFac * firstFac).toFixed(2);
         }
     }
+    else if (propertySubString == '8') diameter = 4.1;
+    else if (propertySubString == '10') diameter = 4.8;
     else if (propertySubString == '1') diameter = 25.4;
     else if (propertySubString.startsWith('0.') || propertySubString.startsWith('1.')) {
         diameter = (25.4 * parseFloat(propertySubString)).toFixed(2);
@@ -336,7 +341,7 @@ function getThreadPropertysUN(propertyStr, type) {
  */
 function extendNENNDURCHMESSER_STEIGUNG(element) {
     if (element.ABMESSUNG_PUR) {
-        setGewindeTypePropertys(element, getThreadPropertys(element.ABMESSUNG_PUR));
+        setGewindeTypePropertys(element, extractThreadPropertys(element.ABMESSUNG_PUR));
     }
 }
 
