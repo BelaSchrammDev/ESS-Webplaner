@@ -220,11 +220,11 @@ function getSubstrX(text) {
 function extractThreadPropertys(abmessung) {
     const TYPE_ARRAY = [
         { type: 'NPSM', matches: ['NPSM'], propertyExtraxtFunction: undefined },
+        { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNS', 'UNR', 'UNC', 'UN'], propertyExtraxtFunction: getThreadPropertysUN },
         { type: 'Tr', matches: ['Tr', 'TR'], propertyExtraxtFunction: getThreadPropertysM_TR },
         { type: 'M', matches: ['M', 'MJ'], propertyExtraxtFunction: getThreadPropertysM_TR },
         { type: 'R', matches: ['R'], propertyExtraxtFunction: getThreadPropertysRG },
         { type: 'G', matches: ['G'], propertyExtraxtFunction: getThreadPropertysRG },
-        { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNS', 'UNR', 'UNC', 'UN'], propertyExtraxtFunction: getThreadPropertysUN },
     ];
     const clearedAbmessung = clearUnusedChars(abmessung);
     for (let index = 0; index < TYPE_ARRAY.length; index++) {
