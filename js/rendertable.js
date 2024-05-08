@@ -208,12 +208,13 @@ function changeLDRohSelect(index) {
 function renderNUMMER(index, element) {
     let color = '';
     if (element['ZU_AUFTRAG']) {
-        if (element.ZU_AUFTRAG == '00000000') color = 'background-color: rgb(255, 168, 168);';
-        else color = 'background-color: rgb(92, 238, 92);';
+        if (element.ZU_AUFTRAG != '00000000') color = 'background-color: rgb(92, 238, 92);';
     }
     if (element['HINWEISTEXT'] && element.HINWEISTEXT.includes('EXPRESS')) color = 'background-color: rgb(141, 141, 255);';
-    return `<td style="${color}">${element.NUMMER}</td>`;
+    return `<td ${color == '' ? '' : ' style="' + color + ';"'}>${element.NUMMER}</td>`;
 }
+
+// <div style="background-color: rgb(red, green, blue);"></div>
 
 
 /**
@@ -304,8 +305,10 @@ function renderKENNWORT(index, element) {
     let fieldKENNWORT = element.KENNWORT;
     let currentIndex = tableKENNWORTconditions.findIndex((e) => { return fieldKENNWORT == e; });
     let fieldHTML = fieldKENNWORT;
-    if (currentIndex > 0) fieldHTML += `<button onClick="removeTagFromKENNWORT(${index})">&#x2770;</button>`;
-    if (currentIndex < tableKENNWORTconditions.length - 1) fieldHTML += `<button onClick="addTagFromKENNWORT(${index})">&#x2771;</button>`;
+    if (currentIndex != -1) {
+        if (currentIndex > 0) fieldHTML += `<button onClick="removeTagFromKENNWORT(${index})">&#x2770;</button>`;
+        if (currentIndex < tableKENNWORTconditions.length - 1) fieldHTML += `<button onClick="addTagFromKENNWORT(${index})">&#x2771;</button>`;
+    }
     return `<td style="text-align: left;" id="kennwort_${index}">${fieldHTML}</td>`;
 }
 

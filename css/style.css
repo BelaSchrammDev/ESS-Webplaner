@@ -2,11 +2,15 @@
     --filter_height: 50px;
     --list_margin_top: 100px;
 
-    --button_bar_left_width: 120px;
+    --button_bar_left_width: 150px;
 }
 
 .hide {
     display: none;
+}
+
+button {
+    cursor: pointer;
 }
 
 /* ------------------------------------------------------ */
@@ -16,20 +20,34 @@
     left: 0;
     top: var(--filter_height);
     bottom: 0;
-    background-color: bisque;
+    background-color: #e3eaff;
     width: var(--button_bar_left_width);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: stretch;
+    align-items: center;
     gap: 10px;
-    padding-top: 50px;
+    padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
+    overflow-y: auto;
 }
 
 .button_bar_left button {
+    transition:
+        border-radius 0.125s ease-in-out,
+        background-color 0.125s ease-in-out;
     border-radius: 10px;
+    border: 1px solid black;
+    background-color: rgb(236, 234, 234);
+    width: 100%;
+}
+
+.button_bar_left button:hover {
+    cursor: pointer;
+    border-radius: 1px;
+    border: 1px solid blue;
+    background-color: rgb(225, 219, 255);
 }
 
 .button_bar_left span {
@@ -117,7 +135,7 @@ td {
 .filters span {
     color: black;
     font-weight: bold;
-    background-color: lightgray;
+    background-color: rgb(247, 247, 247);
     padding: 5px;
     border-radius: 5px;
 }
