@@ -53,9 +53,6 @@ function loadTable(inputField) {
  * @param {string} tableJSON string with the json object
  */
 function parseTable(tableJSON) {
-    document.getElementById('filters').classList.remove('hide');
-    document.getElementById('filters').classList.add('filters');
-    document.getElementById('file_choise').classList.add('hide');
     tableCPU = JSON.parse(tableJSON);
     if (tableCPU.length > 0) {
         getOriginalCPU_Fields(tableCPU[0]);

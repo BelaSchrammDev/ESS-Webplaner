@@ -2,7 +2,7 @@
     --filter_height: 50px;
     --list_margin_top: 100px;
 
-    --button_bar_left_width: 150px;
+    --button_bar_left_width: 180px;
 }
 
 .hide {
@@ -13,15 +13,37 @@ button {
     cursor: pointer;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+.main-content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.mainlist-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 /* ------------------------------------------------------ */
 
 .button_bar_left {
-    position: fixed;
+    position: sticky;
+    top: 0;
     left: 0;
-    top: var(--filter_height);
     bottom: 0;
     background-color: #e3eaff;
-    width: var(--button_bar_left_width);
+    min-width: var(--button_bar_left_width);
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -52,14 +74,14 @@ button {
 
 .button_bar_left span {
     text-align: center;
+    align-self: stretch;
+    border-bottom: 2px solid black;
 }
 
 /* ------------------------------------------------------ */
 
 .list_content {
-    margin-top: var(--list_margin_top);
     width: max-content;
-    padding-left: var(--button_bar_left_width);
     margin-left: auto;
     margin-right: auto;
 }
@@ -117,19 +139,18 @@ td {
 /* ------------------------------------------------------ */
 
 .filters {
-    padding-left: 50px;
-    padding-right: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
     background-color: gray;
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
     height: var(--filter_height);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
     min-width: 900px;
+    width: 100%;
 }
 
 .filters span {
@@ -138,6 +159,7 @@ td {
     background-color: rgb(247, 247, 247);
     padding: 5px;
     border-radius: 5px;
+    margin: 10px;
 }
 
 .filter_infos {
@@ -149,13 +171,24 @@ td {
 }
 
 .file_choise {
-    padding: 10px;
-    border: 2px solid green;
-    border-radius: 5px;
-    background-color: gray;
-    margin: auto;
     height: max-content;
-    width: max-content;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-choose-file {
+    text-align: center;
+    width: 100%;
+    padding: 5px 10px;
+    border: 1px solid green;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-choose-file:hover {
+    background-color: lightgray;
 }
 
 /* ------------------------------------------------------ */

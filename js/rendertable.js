@@ -118,7 +118,7 @@ function changeGT_confirm() {
 
 
 /**
- * specialfieldrenderer for the LDROHDURCHMESSER field with backgroundcolor settings
+ * specialfieldrenderer for the LDROHDURCHMESSER field with text-align settings
  * and onclick action to change the LDROHDURCHMESSER to unknow ['?']
  * or a dropdown list to select the right value.
  * possible values are 'Mittel', 'Groß' and 'Klein', or if unknow, '?'
@@ -132,22 +132,24 @@ function renderLDRoh(index, element) {
     let action = '';
     if (element.LDROHDURCHMESSER == '?') innerHtml = getLDRohSelect(index);
     else action = `onClick="setLDRohUnknow(${index})"`;
-    return `<td ${action} style="${getColorLDRohDiameter(element.LDROHDURCHMESSER)};${action == '' ? '' : 'cursor: pointer;'}">${innerHtml}</td>`;
+    return `<td ${action} style="${getTextAlignmentLDRohDiameter(element.LDROHDURCHMESSER)};${action == '' ? '' : 'cursor: pointer;'}">${innerHtml}</td>`;
 }
 
 
 /**
- * get the background-color style code for the LDROHDURCHMESSER field
+ * get the text-align style string for the LDROHDURCHMESSER field
  * 
  * @param {string} tag LDROHDURCHMESSER type as string, can be 'Mittel', 'Groß' and 'Klein', or, if unknow '?'
- * @returns {string} background-color style string with the matching colorcode
+ * @returns {string} style string for the text-align property
  */
-function getColorLDRohDiameter(tag) {
-    let color = 'orange';
-    if (tag == 'Mittel') color = 'yellow';
-    else if (tag == 'Groß') color = 'red';
-    else if (tag == 'Klein') color = 'green';
-    return `background-color: ${color};`;
+function getTextAlignmentLDRohDiameter(tag) {
+    let align = 'center';
+    let bgColor = 'white';
+    if (tag == 'Mittel') align = 'center';
+    else if (tag == 'Groß') align = 'right';
+    else if (tag == 'Klein') align = 'left';
+    else bgColor = 'orange';
+    return `text-align: ${align}; background-color: ${bgColor};`;
 }
 
 

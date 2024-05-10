@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESS Web Planer</title>
     <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/read_excel_file.js"></script>
+    <script src="./js/excel-transform.js"></script>
     <script src="./js/rendertable.js"></script>
     <script src="./js/rendertypes.js"></script>
     <script src="./js/table.js"></script>
@@ -14,20 +16,32 @@
 </head>
 
 <body onload="initESSPlaner()">
-    <div id="file_choise" class="file_choise">
-        <input type="file" name="Lade Tabelle" id="cpu_file" accept=".json" onchange="loadTable(this)">
-    </div>
-    <div id="filters" class="hide">
+    <section class="main-content">
         <div id="button_bar_left" class="button_bar_left">
+            <span>Actionen</span>
+            <div id="file_choise" class="file_choise">
+                <input type="file" id="cpu_file" accept=".json" onchange="loadTable(this)" style="display: none;">
+                <label class="btn-choose-file" for="cpu_file">Aufträge laden...</label>
+            </div>
+            <div id="file_choise" class="file_choise">
+                <input type="file" id="prio_file" accept=".xlsx" onchange="loadExcel(this)" style="display: none;">
+                <label class="btn-choose-file" for="prio_file">Prio Liste laden...</label>
+            </div>
             <button onclick="window.print()">Drucken</button>
         </div>
-        <div class="filter_infos">
-            <span class="list_type" id="list_type"></span>
-            <span id="lastModifiedDate"></span>
-            <span id="num_filter"></span>
+        <div class="mainlist-content">
+            <div id="filters" class="filters">
+                <div class="filter_infos">
+                    <span class="list_type" id="list_type">Art</span>
+                    <span id="lastModifiedDate">Datum</span>
+                    <span id="num_filter">Anzahl</span>
+                </div>
+            </div>
+            <div id="list_content" class="list_content"></div>
         </div>
-    </div>
-    <div id="list_content" class="list_content"></div>
+    </section>
+
+
     <div id="changegewindetype" class="changegewindetype hide">
         <div class="change_gt_innerbox">
             <form action="javascript:;" onsubmit="changeGT_confirm()">
