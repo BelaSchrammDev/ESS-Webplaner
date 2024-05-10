@@ -11,6 +11,7 @@ async function loadExcel(inputfield) {
 
 
 function parseExcelArrayToJSON(excelArray) {
+    prioTable = [];
     for (let index = 0; index < excelArray.length; index++) {
         console.log('Excel load...' + index + ' / ' + excelArray.length);
         const rowArray = excelArray[index];

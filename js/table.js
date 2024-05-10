@@ -57,7 +57,8 @@ function parseTable(tableJSON) {
     if (tableCPU.length > 0) {
         getOriginalCPU_Fields(tableCPU[0]);
         extendTable();
-        renderNew(renderTypes.all);
+        if (lastRenderType) renderNew(lastRenderType);
+        else renderNew(renderTypes.all);
     }
 }
 

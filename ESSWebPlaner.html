@@ -19,14 +19,10 @@
     <section class="main-content">
         <div id="button_bar_left" class="button_bar_left">
             <span>Actionen</span>
-            <div id="file_choise" class="file_choise">
-                <input type="file" id="cpu_file" accept=".json" onchange="loadTable(this)" style="display: none;">
-                <label class="btn-choose-file" for="cpu_file">Aufträge laden...</label>
-            </div>
-            <div id="file_choise" class="file_choise">
-                <input type="file" id="prio_file" accept=".xlsx" onchange="loadExcel(this)" style="display: none;">
-                <label class="btn-choose-file" for="prio_file">Prio Liste laden...</label>
-            </div>
+            <input type="file" id="cpu_file" accept=".json" onchange="loadTable(this)" style="display: none;">
+            <label class="btn-choose-file" for="cpu_file">Aufträge laden...</label>
+            <input type="file" id="prio_file" accept=".xlsx" onchange="loadExcel(this)" style="display: none;">
+            <label class="btn-choose-file" for="prio_file">Prio Liste laden...</label>
             <button onclick="window.print()">Drucken</button>
         </div>
         <div class="mainlist-content">

@@ -469,6 +469,7 @@ function renderNew(renderOpt) {
     if (renderOpt['renderFunction']) showLines = renderOpt.renderFunction(renderOpt);
     else showLines = renderTableDefault(renderOpt);
     renderShowLines(showLines);
+    document.getElementById('list_content').scrollTop = 0;
 }
 
 
