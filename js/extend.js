@@ -239,6 +239,21 @@ function extractThreadPropertys(abmessung) {
     return undefined;
 }
 
+function getThreadPropertyObejctUnKnown(propertyStr, type) {
+    return new ThreadUnkown(type, propertyStr);
+}
+
+function getThreadPropertyObjectUN(propertyStr, type) {
+    return new ThreadUN(type, propertyStr);
+}
+
+function getThreadPropertyObjectTrM(propertyStr, type) {
+    return new ThreadM_TR(type, propertyStr);
+}
+
+function getThreadPropertyObjectRG(propertyStr, type) {
+    return new ThreadRG(type, propertyStr);
+}
 
 function clearUnusedChars(abmessung) {
     const CLEAR_CHARS = ['GR', 'AR', 'LH'];
