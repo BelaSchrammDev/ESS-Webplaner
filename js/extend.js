@@ -50,7 +50,7 @@ function getWeekNumber(sourceDate) {
  * @param {Object} element orderJSON to change
  */
 function extendLaeppBohr(element) {
-    if (element['threadPropertys']) {
+    if (element['threadPropertys'] && element.threadPropertys['diameter'] != '??') {
         let thProp = element.threadPropertys;
         if (thProp['diameter'] && thProp['pitch']) {
             let bohrer = thProp.diameter - (2 * thProp.pitch);
@@ -121,93 +121,6 @@ function extendABMESSUNG(element) {
 }
 
 
-const threatMregular_Pitch = {
-    4: 0.7,
-    4.5: 0.75,
-    5: 0.8,
-    6: 1,
-    7: 1,
-    8: 1.25,
-    9: 1.25,
-    10: 1.5,
-    11: 1.5,
-    12: 1.75,
-    14: 2,
-    16: 2,
-    18: 2.5,
-    20: 2.5,
-    22: 2.5,
-    24: 3,
-    27: 3,
-    30: 3.5,
-    33: 3.5,
-    36: 4,
-    39: 4,
-}
-
-
-const threatsRG = {
-    "1/16": {
-        "diameter": 6.84,
-        "pitch": 0.907
-    },
-    "1/8": {
-        "diameter": 9.73,
-        "pitch": 0.907
-    },
-    "1/4": {
-        "diameter": 13.16,
-        "pitch": 1.337
-    },
-    "3/8": {
-        "diameter": 16.66,
-        "pitch": 1.337
-    },
-    "1/2": {
-        "diameter": 20.95,
-        "pitch": 1.814
-    },
-    "5/8": {
-        "diameter": 22.91,
-        "pitch": 1.814
-    },
-    "3/4": {
-        "diameter": 26.44,
-        "pitch": 1.814
-    },
-    "7/8": {
-        "diameter": 30.20,
-        "pitch": 1.814
-    },
-    "1": {
-        "diameter": 33.25,
-        "pitch": 2.309
-    },
-    "1 1/8": {
-        "diameter": 37.897,
-        "pitch": 2.309
-    },
-    "1 1/2": {
-        "diameter": 48.000,
-        "pitch": 2.309
-    },
-}
-
-
-function getSubstrHS(text) {
-    let pos = text.search(/[\s-]/); if (pos == -1) return text; return text.substring(0, pos);
-}
-
-
-function getSubstrMinus(text) {
-    let pos = text.search(/[-]/); if (pos == -1) return text; return text.substring(0, pos);
-}
-
-
-function getSubstrX(text) {
-    let pos = text.search(/[x]/); if (pos == -1) return text; return text.substring(0, pos);
-}
-
 
 /**
  * analyzed and calculate the property of the thread
@@ -219,36 +132,54 @@ function getSubstrX(text) {
  */
 function extractThreadPropertys(abmessung) {
     const TYPE_ARRAY = [
-        { type: 'NPSM', matches: ['NPSM'], propertyExtraxtFunction: undefined },
-        { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNS', 'UNR', 'UNC', 'UN'], propertyExtraxtFunction: getThreadPropertysUN },
-        { type: 'Tr', matches: ['Tr', 'TR'], propertyExtraxtFunction: getThreadPropertysM_TR },
-        { type: 'M', matches: ['M', 'MJ'], propertyExtraxtFunction: getThreadPropertysM_TR },
-        { type: 'R', matches: ['R'], propertyExtraxtFunction: getThreadPropertysRG },
-        { type: 'G', matches: ['G'], propertyExtraxtFunction: getThreadPropertysRG },
+        { type: 'NPSM', matches: ['NPSM'], getThreadPropertyObject: getThreadPropertyObjectNPSM },
+        { type: 'BS', matches: ['BSF', 'BSW', 'BSC'], getThreadPropertyObject: getThreadPropertyObjectBS },
+        { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNJ', 'UNF', 'UNS', 'UNR', 'UNC', 'UN'], getThreadPropertyObject: getThreadPropertyObjectUN },
+        { type: 'Tr', matches: ['Tr', 'TR'], getThreadPropertyObject: getThreadPropertyObjectTrM },
+        { type: 'M', matches: ['M', 'MJ'], getThreadPropertyObject: getThreadPropertyObjectTrM },
+        { type: 'R', matches: ['R'], getThreadPropertyObject: getThreadPropertyObjectRG },
+        { type: 'G', matches: ['G'], getThreadPropertyObject: getThreadPropertyObjectRG },
+        { type: 'W', matches: ['W'], getThreadPropertyObject: getThreadPropertyObjectW },
+        { type: 'Pg', matches: ['Pg'], getThreadPropertyObject: getThreadPropertyObjectPg },
     ];
     const clearedAbmessung = clearUnusedChars(abmessung);
     for (let index = 0; index < TYPE_ARRAY.length; index++) {
         for (let j = 0; j < TYPE_ARRAY[index].matches.length; j++) {
             if (clearedAbmessung.includes(TYPE_ARRAY[index].matches[j])) {
-                if (!TYPE_ARRAY[index].propertyExtraxtFunction) return undefined;
                 const adjustAbmessung = clearedAbmessung.replace(TYPE_ARRAY[index].matches[j], '').trim();
-                return TYPE_ARRAY[index].propertyExtraxtFunction(adjustAbmessung, TYPE_ARRAY[index].type);
+                return TYPE_ARRAY[index].getThreadPropertyObject(adjustAbmessung, TYPE_ARRAY[index].type);
             }
         }
     }
-    return undefined;
+    return getThreadPropertyObejctUnKnown();
 }
 
-function getThreadPropertyObejctUnKnown(propertyStr, type) {
-    return new ThreadUnkown(type, propertyStr);
+function getThreadPropertyObejctUnKnown() {
+    return new ThreadUnkown();
 }
 
-function getThreadPropertyObjectUN(propertyStr, type) {
-    return new ThreadUN(type, propertyStr);
+function getThreadPropertyObjectNPSM() {
+    return new ThreadNPSM();
+}
+
+function getThreadPropertyObjectW(propertys) {
+    return new ThreadW(propertys);
+}
+
+function getThreadPropertyObjectPg(propertys) {
+    return new ThreadPg(propertys);
+}
+
+function getThreadPropertyObjectBS(propertys) {
+    return new ThreadBS(propertys);
+}
+
+function getThreadPropertyObjectUN(propertyStr) {
+    return new ThreadUN(propertyStr);
 }
 
 function getThreadPropertyObjectTrM(propertyStr, type) {
-    return new ThreadM_TR(type, propertyStr);
+    return new ThreadTrM(type, propertyStr);
 }
 
 function getThreadPropertyObjectRG(propertyStr, type) {
@@ -264,113 +195,17 @@ function clearUnusedChars(abmessung) {
 
 
 /**
- * get the threadproperty for JSON for Tr thread, if can be calculated or null
- * 
- * @param {string} propertyStr thread propertystring
- * @param {string} type thread type
- * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
- */
-function getThreadPropertysM_TR(propertyStr, type) {
-    let diameter = 0;
-    let pitch = 0;
-    propertyStr = propertyStr.replaceAll(',', '.');
-    propertyStr = propertyStr.replaceAll('SK', ' ');
-    propertyStr = propertyStr.replaceAll('Sk', ' ');
-    if (propertyStr.includes('x')) {
-        diameter = getSubstrX(propertyStr);
-        pitch = getSubstrHS(propertyStr.substring(propertyStr.indexOf('x') + 1));
-    }
-    else if (type == 'M') {
-        let propertySubString = getSubstrHS(propertyStr);
-        diameter = propertySubString;
-        if (threatMregular_Pitch[propertySubString]) pitch = threatMregular_Pitch[propertySubString];
-        else pitch = '-?-';
-    }
-    return { type, diameter, pitch }
-}
-
-
-/**
- * get the threadproperty for JSON for R or G thread,  if can be calculated or null
- * 
- * @param {string} propertyStr thread propertystring
- * @param {string} type thread type
- * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
- */
-function getThreadPropertysRG(propertyStr, type) {
-    let diameter = 0;
-    let pitch = 0;
-    for (key in threatsRG) {
-        if (propertyStr.includes(key)) {
-            diameter = threatsRG[key].diameter;
-            pitch = threatsRG[key].pitch;
-        }
-    }
-    return { type, diameter, pitch }
-}
-
-
-/**
- * get the threadproperty for JSON for UN thread,  if can be calculated or null
- * 
- * @param {string} propertyStr thread propertystring
- * @param {string} type thread type
- * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
- */
-function getThreadPropertysUN(propertyStr, type) {
-    let diameter = 0;
-    let propertySubString = getSubstrMinus(propertyStr);
-    if (propertySubString.includes('/')) {
-        let factors = propertySubString.trim().split('/');
-        if (factors.length > 1) {
-            let firstFac = +factors[0];
-            let secondFac = +factors[1];
-            if (factors[0].includes(' ')) {
-                let firstFactors = factors[0].split(' ');
-                firstFac = +firstFactors[1];
-                if (firstFactors[0] == '1') firstFac += secondFac;
-                if (firstFactors[0] == '2') firstFac += secondFac * 2;
-            }
-            diameter = (25.4 / secondFac * firstFac).toFixed(2);
-        }
-    }
-    else if (propertySubString == '8') diameter = 4.1;
-    else if (propertySubString == '10') diameter = 4.8;
-    else if (propertySubString == '1') diameter = 25.4;
-    else if (propertySubString.startsWith('0.') || propertySubString.startsWith('1.')) {
-        diameter = (25.4 * parseFloat(propertySubString)).toFixed(2);
-    }
-    else return undefined;
-
-    let pitch = 0;
-    propertySubString = getSubstrHS(propertyStr.substring(propertyStr.indexOf('-') + 1));
-    pitch = (25.4 / propertySubString).toFixed(4);
-    return { type, diameter, pitch }
-}
-
-
-/**
  * set the threadproperty of the elemnt
  * 
  * @param {Object} element orderJSON to change
  */
 function extendNENNDURCHMESSER_STEIGUNG(element) {
     if (element.ABMESSUNG_PUR) {
-        setGewindeTypePropertys(element, extractThreadPropertys(element.ABMESSUNG_PUR));
-    }
-}
-
-
-function setGewindeTypePropertys(element, propertys) {
-    if (propertys) {
-        element.threadPropertys = propertys;
-        element.GEWINDETYPE = propertys.type;
-        element.NENNDURCHMESSER = propertys.diameter ? +propertys.diameter : '??';
-        element.STEIGUNG = propertys.pitch ? +propertys.pitch : '??';
-    } else {
-        element.GEWINDETYPE = '???';
-        element.NENNDURCHMESSER = '??';
-        element.STEIGUNG = '??';
+        let threadPropertyObject = extractThreadPropertys(element.ABMESSUNG_PUR);
+        element.threadPropertys = threadPropertyObject;
+        element.GEWINDETYPE = threadPropertyObject.type;
+        element.NENNDURCHMESSER = threadPropertyObject.diameter;
+        element.STEIGUNG = threadPropertyObject.pitch;
     }
 }
 

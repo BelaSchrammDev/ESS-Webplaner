@@ -106,7 +106,7 @@ function changeGT_confirm() {
         setGewindeTypePropertys(element, newThreadProperty);
         extendLAEPPDORN_RawMaterial(element);
         extendLaeppBohr(element);
-        if (lastRenderType) renderNew(lastRenderType);
+        if (lastRenderType) renderList(lastRenderType);
         else renderFilterAndStoreTheFunction(filterAlle);
         editGT_ID = -1;
         document.getElementById('changegewindetype').classList.add('hide');
@@ -182,7 +182,7 @@ function getLDRohSelect(index) {
 function setLDRohUnknow(index) {
     const element = tableCPU[index];
     element.LDROHDURCHMESSER = '?';
-    renderNew(lastRenderType);
+    renderList(lastRenderType);
 }
 
 
@@ -195,7 +195,7 @@ function changeLDRohSelect(index) {
     const element = tableCPU[index];
     const newLDRoh = document.getElementById('select_roh_diameter_' + index).value;
     element.LDROHDURCHMESSER = newLDRoh;
-    renderNew(lastRenderType);
+    renderList(lastRenderType);
 }
 
 
@@ -459,7 +459,7 @@ function renderTableDefault(renderOpt) {
 }
 
 
-function renderNew(renderOpt) {
+function renderList(renderOpt) {
     lastRenderType = renderOpt;
     lastGroupingIndex = -1;
     renderGroupingState = 0;
@@ -484,7 +484,7 @@ function renderButtons() {
             const renderType = renderTypes[renderKeys[i]];
             if (renderType.group == group) {
                 buttonBar.innerHTML += `
-                <button onclick="renderNew(renderTypes['${renderKeys[i]}'])">${renderType.buttonText}</button>
+                <button onclick="renderList(renderTypes['${renderKeys[i]}'])">${renderType.buttonText}</button>
                 `;
             }
         }

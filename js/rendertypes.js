@@ -18,9 +18,6 @@ const sorters = {
     },
     nenndurchmesser: function (a, b) {
         function getNDM(ndmString) { if (ndmString != undefined && ndmString != '??') return +ndmString; return 0; }
-        if (a.NENNDURCHMESSER == 5 || b.NENNDURCHMESSER == 5) {
-            console.log('debug');
-        }
         let aNDM = getNDM(a.NENNDURCHMESSER);
         let bNDM = getNDM(b.NENNDURCHMESSER);
         if (aNDM > bNDM) return 1;
