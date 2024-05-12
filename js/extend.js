@@ -121,70 +121,30 @@ function extendABMESSUNG(element) {
 }
 
 
-
 /**
  * analyzed and calculate the property of the thread
- * still to implement: Pg, Fg, BS
- * where BS count be calculated with the same function like UN
+ * still to implement: Pg, Fg, NPSM
  * 
  * @param {string} abmessung string with thread description
  * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
 function extractThreadPropertys(abmessung) {
-    const TYPE_ARRAY = [
-        { type: 'NPSM', matches: ['NPSM'], getThreadPropertyObject: getThreadPropertyObjectNPSM },
-        { type: 'BS', matches: ['BSF', 'BSW', 'BSC'], getThreadPropertyObject: getThreadPropertyObjectBS },
-        { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNJ', 'UNF', 'UNS', 'UNR', 'UNC', 'UN'], getThreadPropertyObject: getThreadPropertyObjectUN },
-        { type: 'Tr', matches: ['Tr', 'TR'], getThreadPropertyObject: getThreadPropertyObjectTrM },
-        { type: 'M', matches: ['M', 'MJ'], getThreadPropertyObject: getThreadPropertyObjectTrM },
-        { type: 'R', matches: ['R'], getThreadPropertyObject: getThreadPropertyObjectRG },
-        { type: 'G', matches: ['G'], getThreadPropertyObject: getThreadPropertyObjectRG },
-        { type: 'W', matches: ['W'], getThreadPropertyObject: getThreadPropertyObjectW },
-        { type: 'Pg', matches: ['Pg'], getThreadPropertyObject: getThreadPropertyObjectPg },
-    ];
+    let threadPropertys = { type: '???', diameter: '??', pitch: '??' }
     const clearedAbmessung = clearUnusedChars(abmessung);
     for (let index = 0; index < TYPE_ARRAY.length; index++) {
-        for (let j = 0; j < TYPE_ARRAY[index].matches.length; j++) {
-            if (clearedAbmessung.includes(TYPE_ARRAY[index].matches[j])) {
-                const adjustAbmessung = clearedAbmessung.replace(TYPE_ARRAY[index].matches[j], '').trim();
-                return TYPE_ARRAY[index].getThreadPropertyObject(adjustAbmessung, TYPE_ARRAY[index].type);
+        const typeObject = TYPE_ARRAY[index];
+        for (let j = 0; j < typeObject.matches.length; j++) {
+            if (clearedAbmessung.includes(typeObject.matches[j])) {
+                const adjustAbmessung = clearedAbmessung.replace(typeObject.matches[j], '').trim();
+                threadPropertys.type = typeObject.type;
+                typeObject.extractPropertyFunction(adjustAbmessung, threadPropertys);
+                return threadPropertys;
             }
         }
     }
-    return getThreadPropertyObejctUnKnown();
+    return threadPropertys;
 }
 
-function getThreadPropertyObejctUnKnown() {
-    return new ThreadUnkown();
-}
-
-function getThreadPropertyObjectNPSM() {
-    return new ThreadNPSM();
-}
-
-function getThreadPropertyObjectW(propertys) {
-    return new ThreadW(propertys);
-}
-
-function getThreadPropertyObjectPg(propertys) {
-    return new ThreadPg(propertys);
-}
-
-function getThreadPropertyObjectBS(propertys) {
-    return new ThreadBS(propertys);
-}
-
-function getThreadPropertyObjectUN(propertyStr) {
-    return new ThreadUN(propertyStr);
-}
-
-function getThreadPropertyObjectTrM(propertyStr, type) {
-    return new ThreadTrM(type, propertyStr);
-}
-
-function getThreadPropertyObjectRG(propertyStr, type) {
-    return new ThreadRG(type, propertyStr);
-}
 
 function clearUnusedChars(abmessung) {
     const CLEAR_CHARS = ['GR', 'AR', 'LH'];
