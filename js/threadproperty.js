@@ -116,7 +116,8 @@ function replaceCharArray(str, charArray) {
 }
 
 function extractPropertysUnknow(propertyString, propertyObject) {
-    // do nothing here, thread is unknown
+    propertyObject.diameter = '??';
+    propertyObject.pitch = '??';
 }
 
 

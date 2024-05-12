@@ -129,7 +129,7 @@ function extendABMESSUNG(element) {
  * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
  */
 function extractThreadPropertys(abmessung) {
-    let threadPropertys = { type: '???', diameter: '??', pitch: '??' }
+    let threadPropertys = { type: '???' };
     const clearedAbmessung = clearUnusedChars(abmessung);
     for (let index = 0; index < TYPE_ARRAY.length; index++) {
         const typeObject = TYPE_ARRAY[index];
@@ -142,6 +142,7 @@ function extractThreadPropertys(abmessung) {
             }
         }
     }
+    extractPropertysUnknow(clearedAbmessung, threadPropertys);
     return threadPropertys;
 }
 
