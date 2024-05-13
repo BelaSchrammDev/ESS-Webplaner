@@ -1,5 +1,5 @@
 const tableHeaderStrings = {
-    "ZU_AUFTRAG": "Kd.Auftrag",
+    "ZU_AUFTRAG": "Kunden<br>Auftrags<br>Nummer",
     "T_R": "Termin<br>Rohlinge",
     "ABMESSUNG": "Abmessung von CPU",
     "ABMESSUNG_PUR": "Abmessung",

@@ -50,15 +50,8 @@ function getWeekNumber(sourceDate) {
  * @param {Object} element orderJSON to change
  */
 function extendLaeppBohr(element) {
-    if (element['threadPropertys'] && element.threadPropertys['diameter'] != '??') {
-        let thProp = element.threadPropertys;
-        if (thProp['diameter'] && thProp['pitch']) {
-            let bohrer = thProp.diameter - (2 * thProp.pitch);
-            if (thProp.diameter > 20) bohrer -= 5;
-            else bohrer -= 3;
-            element.LDBOHRDURCHMESSER = bohrer.toFixed(2);
-            if (element.LDBOHRDURCHMESSER < 1.6) element.LDBOHRDURCHMESSER = 1.6;
-        }
+    if (isThreadPropertyValid(element['threadPropertys'])) {
+        element.LDBOHRDURCHMESSER = getLaeppBohrDurchmesser(element['threadPropertys']);
     }
 }
 

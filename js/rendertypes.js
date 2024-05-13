@@ -2,14 +2,19 @@ let lastRenderType = undefined;
 
 
 const tableViewAllKeys = ['NUMMER', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'GEWINDETYPE', 'NENNDURCHMESSER', 'STEIGUNG', 'T_R', 'T_LAEPP', 'STATUS', 'KENNWORT',];
+const tableViewKa = ['ZU_AUFTRAG', 'NUMMER', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'GEWINDETYPE', 'NENNDURCHMESSER', 'STEIGUNG', 'T_R', 'T_LAEPP', 'STATUS', 'KENNWORT',];
 const tableViewRohteilKeys = ['NUMMER', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'T_R', 'ROHTEILWOCHE', 'KENNWORT',];
 const tableViewLaeppdornKeys = ['NUMMER', 'ROHTEILDURCHMESSER', 'LDROHDURCHMESSER', 'LDBOHRDURCHMESSER', 'GEWINDETYPE', 'ABMESSUNG_PUR', 'NENNDURCHMESSER', 'STEIGUNG', 'T_LAEPP', 'KENNWORT'];
 const tableViewLaeppKeys = ['NUMMER', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'GEWINDETYPE', 'NENNDURCHMESSER', 'STEIGUNG', 'T_R', 'T_LAEPP', 'KENNWORT'];
+const tableViewLaeppKaKeys = ['NUMMER', 'ZU_AUFTRAG', 'ROHTEILDURCHMESSER', 'ABMESSUNG_PUR', 'GEWINDETYPE', 'NENNDURCHMESSER', 'STEIGUNG', 'T_R', 'T_LAEPP', 'KENNWORT'];
 
 
 const sorters = {
     fa_number: function (a, b) {
         return a.NUMMER - b.NUMMER;
+    },
+    ka_number: function (a, b) {
+        return a.ZU_AUFTRAG - b.ZU_AUFTRAG;
     },
     diameter_rohteil: function (a, b) {
         let aRDM = a['ROHTEILDURCHMESSER'] ? a.ROHTEILDURCHMESSER : '';
@@ -37,23 +42,87 @@ const sorters = {
 
 
 const button_groups = {
-    kennwort: 'Filtern nach Kennwort',
-    gewindeart: 'Filtern nach Gewindeart',
+    kennwort: 'Nach Kennwort',
+    gewindeart: 'Nach Gewindeart',
+    auftrag: 'Nach Aufträgen',
 };
 
 
 const renderTypes = {
     'all': {
-        'group': 'kennwort',
+        'group': 'auftrag',
         'sort': 'date_beleg',
         'info': 'Alle Aufträge',
-        'buttonText': 'Alle Aufträge',
+        'buttonText': 'Alle',
         'tablekeys': tableViewAllKeys,
         'filters': [
             {
                 function: undefined,
                 'field': '',
                 'value': ''
+            }
+        ]
+    },
+    'allKA': {
+        'group': 'auftrag',
+        'sort': 'ka_number',
+        'info': 'Alle Kundenaufträge',
+        'buttonText': 'Für Kunden',
+        'tablekeys': tableViewKa,
+        'grouping_key': 'ZU_AUFTRAG',
+        'filters': [
+            {
+                function: isFieldNotEqual,
+                'field': 'ZU_AUFTRAG',
+                'value': '00000000'
+            }
+        ]
+    },
+    'allLa': {
+        'group': 'auftrag',
+        'sort': 'fa_number',
+        'info': 'Alle Lageraufträge',
+        'buttonText': 'Lageraufträge',
+        'tablekeys': tableViewAllKeys,
+        'filters': [
+            {
+                function: isFieldEqual,
+                'field': 'ZU_AUFTRAG',
+                'value': '00000000'
+            }
+        ]
+    },
+    'wrongstatus': {
+        'group': 'auftrag',
+        // sort
+        'sort': 'date_laepp',
+        // info setzen
+        'info': 'Alle Aufträge mit falschem Kennwort',
+        'buttonText': 'Unklarem Kennwort',
+        // tabelle rendern
+        'tablekeys': tableViewKa,
+        'filters': [
+            {
+                function: isFieldEqualKA,
+                'field': 'STATUS',
+                'value': '-?-'
+            }
+        ]
+    },
+    'laeppka': {
+        'group': 'auftrag',
+        // sort
+        'sort': 'date_laepp',
+        // info setzen
+        'info': 'Alle Kundenaufträge zu Läppen',
+        'buttonText': 'Für Kunden Läppen',
+        // tabelle rendern
+        'tablekeys': tableViewLaeppKaKeys,
+        'filters': [
+            {
+                function: isFieldEqualKA,
+                'field': 'KENNWORT',
+                'value': 'S L'
             }
         ]
     },
@@ -189,23 +258,6 @@ const renderTypes = {
         'filters': [
             {
                 function: isFieldEqual,
-                'field': 'KENNWORT',
-                'value': 'S L'
-            }
-        ]
-    },
-    'laeppka': {
-        'group': 'kennwort',
-        // sort
-        'sort': 'date_laepp',
-        // info setzen
-        'info': 'Alle Kundenaufträge zum Läppen',
-        'buttonText': 'Läppen KA',
-        // tabelle rendern
-        'tablekeys': tableViewLaeppKeys,
-        'filters': [
-            {
-                function: isFieldEqualKA,
                 'field': 'KENNWORT',
                 'value': 'S L'
             }
@@ -376,6 +428,19 @@ function isFieldEqualKA(element, field, value) {
  */
 function isFieldEqual(element, field, value) {
     return element[field] ? element[field] == value : false;
+}
+
+
+/**
+ * compare the field of the element with the value
+ * 
+ * @param {Object} element orderJSON
+ * @param {string} field fieldname to compare with element
+ * @param {string} value value to compare with the element
+ * @returns {boolean} true if equal, false is not equal
+ */
+function isFieldNotEqual(element, field, value) {
+    return element[field] ? element[field] != value : false;
 }
 
 

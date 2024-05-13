@@ -11,6 +11,19 @@ const TYPE_ARRAY = [
     { type: 'Pg', matches: ['Pg'], extractPropertyFunction: extractPropertysUnknow },
 ];
 
+const LAEPPBOHR_ARRAY = [
+    { type: 'NPSM', func: null },
+    { type: 'VG', func: null },
+    { type: 'BS', func: getLaeppBohrDurchmesserUni },
+    { type: 'UN', func: getLaeppBohrDurchmesserUni },
+    { type: 'Tr', func: null },
+    { type: 'M', func: getLaeppBohrDurchmesserUni },
+    { type: 'R', func: getLaeppBohrDurchmesserUni },
+    { type: 'G', func: getLaeppBohrDurchmesserUni },
+    { type: 'W', func: getLaeppBohrDurchmesserUni },
+    { type: 'Pg', func: null },
+];
+
 
 const threatMregular_Pitch = {
     4: 0.7,
@@ -82,6 +95,18 @@ const threatsRG = {
         "diameter": 48.000,
         "pitch": 2.309
     },
+}
+
+
+function isThreadPropertyValid(threadProperty) {
+    return (
+        threadProperty != null &&
+        threadProperty.type != '???' &&
+        threadProperty.diameter != '??' &&
+        threadProperty.pitch != '??' &&
+        threadProperty.diameter != '0' &&
+        threadProperty.pitch != '0'
+    );
 }
 
 function getSubstrHS(text) {
@@ -171,9 +196,20 @@ function extractPropertysUN(propertyString, propertyObject) {
         let result = (25.4 * parseFloat(propertySubString)).toFixed(2);
         propertyObject.diameter = result > 40 ? result / 25.4 : result;
     }
-    else if (propertySubString == '8') propertyObject.diameter = 4.1;
-    else if (propertySubString == '10') propertyObject.diameter = 4.8;
-    else if (propertySubString == '1') propertyObject.diameter = 25.4;
+    else if (propertyObject.type == 'UN') {
+        const propertyValues = [
+            { '8': 4.1 },
+            { '10': 4.8 },
+            { '1': 25.4 },
+            { '12': 5.48 },
+        ]
+        for (let i = 0; i < propertyValues.length; i++) {
+            if (propertyValues[i][propertySubString]) {
+                propertyObject.diameter = propertyValues[i][propertySubString];
+                break;
+            }
+        }
+    }
     if (propertyObject.diameter != '??') {
         propertySubString = +getSubstrHS(propertyString.substring(propertyString.indexOf('-') + 1));
         if (propertySubString > 5) propertyObject.pitch = (25.4 / propertySubString).toFixed(4);
@@ -191,4 +227,21 @@ function extractPropertysRG(propertyString, propertyObject) {
             break;
         }
     }
+}
+
+
+function getLaeppBohrDurchmesser(threadPropertys) {
+    let threadType = LAEPPBOHR_ARRAY.find(element => element.type == threadPropertys.type);
+    if (threadType && threadType.func) return threadType.func(threadPropertys);
+    return '---';
+}
+
+
+function getLaeppBohrDurchmesserUni(threadPropertys) {
+    let bohrer = threadPropertys.diameter - (2 * threadPropertys.pitch);
+    if (threadPropertys.diameter > 20) bohrer -= 5;
+    else bohrer -= 3;
+    let result = bohrer.toFixed(2);
+    if (result < 1.6) result = 1.6;
+    return result;
 }
