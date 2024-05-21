@@ -287,7 +287,7 @@ function getLaeppBohrDurchmesser(threadPropertys) {
  * @param {number} threadPropertys.pitch - The pitch of the thread.
  * @returns {number} - The calculated Laepp Bohr Durchmesser Uni.
  */
-function getLaeppBohrDurchmesserUni(threadPropertys) {
+export function getLaeppBohrDurchmesserUni(threadPropertys) {
     let bohrer = threadPropertys.diameter - (2 * threadPropertys.pitch);
     if (threadPropertys.diameter > 20) bohrer -= 5;
     else bohrer -= 3;
