@@ -50,9 +50,9 @@ function getWeekNumber(sourceDate) {
  * @param {Object} element orderJSON to change
  */
 function extendLaeppBohr(element) {
-    if (isThreadPropertyValid(element['threadPropertys'])) {
+    if (ifThreadPropertyValid(element['threadPropertys'])) {
         element.LDBOHRDURCHMESSER = getLaeppBohrDurchmesser(element['threadPropertys']);
-    }
+    } else element.LDBOHRDURCHMESSER = LDBOHR_INVALID;
 }
 
 
@@ -159,6 +159,10 @@ function extendNENNDURCHMESSER_STEIGUNG(element) {
         element.threadPropertys = threadPropertyObject;
         element.GEWINDETYPE = threadPropertyObject.type;
         element.NENNDURCHMESSER = threadPropertyObject.diameter;
+        if (threadPropertyObject.diameterFull) {
+            element.NENNDURCHMESSERZOLL = (threadPropertyObject.diameterFull / 25.4).toFixed(4);
+        } else
+            element.NENNDURCHMESSERZOLL = '';
         element.STEIGUNG = threadPropertyObject.pitch;
     }
 }
@@ -170,12 +174,27 @@ function extendNENNDURCHMESSER_STEIGUNG(element) {
  * @param {Object} element orderJSON to change
  */
 function extendLAEPPDORN_RawMaterial(element) {
-    if (element['threadPropertys'] && element.threadPropertys['diameter']) {
+    if (ifThreadPropertyValid(element.threadPropertys)) {
         element.LDROHDURCHMESSER = 'Klein';
         if (element.threadPropertys.diameter >= 24.8) element.LDROHDURCHMESSER = 'Mittel';
         if (element.threadPropertys.diameter >= 34.8) element.LDROHDURCHMESSER = 'Groß';
     }
     else element.LDROHDURCHMESSER = '?';
+}
+
+
+/**
+ * Checks if the thread properties are valid.
+ *
+ * @param {Object} threadPropertys - The thread properties to validate.
+ * @returns {boolean} - Returns true if the thread properties are valid, otherwise false.
+ */
+function ifThreadPropertyValid(threadPropertys) {
+    return (
+        threadPropertys &&
+        (threadPropertys.diameter != '??' && threadPropertys.diameter != '' && threadPropertys.diameter != '0') &&
+        (threadPropertys.pitch != '??' && threadPropertys.pitch != '' && threadPropertys.pitch != '0')
+    );
 }
 
 

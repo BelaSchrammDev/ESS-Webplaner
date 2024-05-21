@@ -1,3 +1,5 @@
+const LDBOHR_INVALID = '---';
+
 const TYPE_ARRAY = [
     { type: 'NPSM', matches: ['NPSM'], extractPropertyFunction: extractPropertysUnknow },
     { type: 'VG', matches: ['VG'], extractPropertyFunction: extractPropertysUnknow },
@@ -98,17 +100,6 @@ const threatsRG = {
 }
 
 
-function isThreadPropertyValid(threadProperty) {
-    return (
-        threadProperty != null &&
-        threadProperty.type != '???' &&
-        threadProperty.diameter != '??' &&
-        threadProperty.pitch != '??' &&
-        threadProperty.diameter != '0' &&
-        threadProperty.pitch != '0'
-    );
-}
-
 function getSubstrHS(text) {
     let input = text.trim();
     let pos = input.search(/[\s-]/);
@@ -186,7 +177,8 @@ function extractPropertysUN(propertyString, propertyObject) {
                 bigFactor = +factors[0].split(' ')[0] * 25.4;
                 factors[0] = factors[0].split(' ')[1];
             }
-            propertyObject.diameter = (bigFactor + ((25.4 / factors[1]) * factors[0])).toFixed(2);
+            propertyObject.diameterFull = bigFactor + ((25.4 / factors[1]) * factors[0]);
+            propertyObject.diameter = propertyObject.diameterFull.toFixed(2);
         }
     }
     else if (+propertySubString > 20) {
@@ -233,7 +225,7 @@ function extractPropertysRG(propertyString, propertyObject) {
 function getLaeppBohrDurchmesser(threadPropertys) {
     let threadType = LAEPPBOHR_ARRAY.find(element => element.type == threadPropertys.type);
     if (threadType && threadType.func) return threadType.func(threadPropertys);
-    return '---';
+    return LDBOHR_INVALID;
 }
 
 

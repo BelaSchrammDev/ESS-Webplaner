@@ -21,6 +21,7 @@ const tableHeaderStrings = {
     "BELEGDATE": "Belegdatum",
     "KENNWORT_CPU": "Kennwort CPU",
     "NENNDURCHMESSER": "Gewinde<br>nenn<br>&Oslash;",
+    "NENNDURCHMESSERZOLL": "Nenn &Oslash;<br>in Zoll",
     "STEIGUNG": "Steigung",
     "GEWINDETYPE": "Type",
 };
