@@ -140,6 +140,12 @@ function extractThreadPropertys(abmessung) {
 }
 
 
+/**
+ * Removes the unused characters from the given `abmessung` string.
+ * 
+ * @param {string} abmessung - The input string from which unused characters need to be removed.
+ * @returns {string} The `abmessung` string with unused characters removed.
+ */
 function clearUnusedChars(abmessung) {
     const CLEAR_CHARS = ['GR', 'AR', 'LH'];
     let clearedAbmessung = abmessung;

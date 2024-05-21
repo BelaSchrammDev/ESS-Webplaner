@@ -372,6 +372,14 @@ function renderTableLine(index, element, tableHeadKeys) {
 }
 
 
+/**
+ * Renders the cell information for a given week, rohDM, and minrohDM.
+ * 
+ * @param {number} week - The week number.
+ * @param {number} rohDM - The rohDM value.
+ * @param {number} minrohDM - The minrohDM value.
+ * @returns {string} - The HTML string representing the table cell.
+ */
 function renderWeekCellInfo(week, rohDM, minrohDM) {
     function isRohteilState(element) { return element.KENNWORT == 'S L LD H R'; }
     function isRohteilWeek(element, week) { return element.ROHTEILWOCHE == week; }
@@ -405,6 +413,10 @@ function renderWeekCellInfo(week, rohDM, minrohDM) {
 }
 
 
+/**
+ * Renders the Roh DM Week table.
+ * @returns {number} The number of lines to be shown in the table.
+ */
 function renderRohDMWeek() {
     const diameterArray = ['22', '32', '38', '45', '53', '63', '71'];
     let weekNumbers = getWeekNumberArray(6);
@@ -440,6 +452,14 @@ function getWeekNumberArray(maxWeekShows) {
 }
 
 
+/**
+ * Renders a table with the provided options.
+ *
+ * @param {Object} renderOpt - The rendering options.
+ * @param {Array} renderOpt.tablekeys - The keys for the table columns.
+ * @param {Array} renderOpt.filters - The filters to apply to the table data.
+ * @returns {number} - The number of lines rendered in the table.
+ */
 function renderTableDefault(renderOpt) {
     let showLines = 0;
     let inputDIV = document.getElementById('list_content')
@@ -459,6 +479,11 @@ function renderTableDefault(renderOpt) {
 }
 
 
+/**
+ * Renders the list based on the provided render options.
+ *
+ * @param {Object} renderOpt - The render options.
+ */
 function renderList(renderOpt) {
     lastRenderType = renderOpt;
     lastGroupingIndex = -1;
@@ -473,6 +498,10 @@ function renderList(renderOpt) {
 }
 
 
+/**
+ * Renders the buttons on the button bar.
+ * The renderTypes array in 'rendertypes.js' is used to render the buttons.
+ */
 function renderButtons() {
     let buttonBar = document.getElementById('button_bar_left');
     let renderKeys = Object.keys(renderTypes);

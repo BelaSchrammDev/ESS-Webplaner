@@ -124,6 +124,13 @@ function getSubstrX(text) {
 }
 
 
+/**
+ * Replaces characters in a string based on the provided character array.
+ *
+ * @param {string} str - The input string to be modified.
+ * @param {Array<{ from: string, to: string }>} charArray - The array of character replacements.
+ * @returns {string} The modified string after replacing the characters.
+ */
 function replaceCharArray(str, charArray) {
     for (let i = 0; i < charArray.length; i++) {
         str = str.replaceAll(charArray[i].from, charArray[i].to);
@@ -131,12 +138,27 @@ function replaceCharArray(str, charArray) {
     return str;
 }
 
+/**
+ * set the thread properties to unknown.
+ * For Unknown Threadtypes
+ * 
+ * @param {string} propertyString - The property string containing unknown properties.
+ * @param {object} propertyObject - The object to assign the extracted properties to.
+ * @returns {void}
+ */
 function extractPropertysUnknow(propertyString, propertyObject) {
     propertyObject.diameter = '??';
     propertyObject.pitch = '??';
 }
 
 
+/**
+ * Extracts properties from a given property string and updates the property object.
+ * For Threadtype W
+ *
+ * @param {string} propertyString - The property string to extract properties from.
+ * @param {object} propertyObject - The object to update with extracted properties.
+ */
 function extractPropertysW(propertyString, propertyObject) {
     let adjustpropertyString = replaceCharArray(propertyString, [
         { from: ',', to: '.' },
@@ -148,6 +170,14 @@ function extractPropertysW(propertyString, propertyObject) {
     extractPropertysUN(adjustpropertyString, propertyObject);
 }
 
+
+/**
+ * Extracts properties from a given property string and updates the property object.
+ * For Threadtype Tr and M.
+ *
+ * @param {string} propertyString - The property string to extract properties from.
+ * @param {object} propertyObject - The object to update with extracted properties.
+ */
 function extractPropertysTrM(propertyString, propertyObject) {
     let propertys = replaceCharArray(propertyString, [
         { from: ',', to: '.' },
@@ -167,6 +197,13 @@ function extractPropertysTrM(propertyString, propertyObject) {
 }
 
 
+/**
+ * Extracts properties from a given property string and updates the property object.
+ * For Threadtype UN and BS
+ *
+ * @param {string} propertyString - The property string to extract properties from.
+ * @param {object} propertyObject - The object to update with extracted properties.
+ */
 function extractPropertysUN(propertyString, propertyObject) {
     let propertySubString = getSubstrMinus(propertyString);
     if (propertySubString.includes('/')) {
@@ -210,6 +247,13 @@ function extractPropertysUN(propertyString, propertyObject) {
 }
 
 
+/**
+ * Extracts properties from a given property string and updates the property object.
+ * For Threadtype R and G
+ *
+ * @param {string} propertyString - The property string to extract properties from.
+ * @param {object} propertyObject - The object to update with extracted properties.
+ */
 function extractPropertysRG(propertyString, propertyObject) {
     let keys = Object.keys(threatsRG);
     for (let i = 0; i < keys.length; i++) {
@@ -222,6 +266,12 @@ function extractPropertysRG(propertyString, propertyObject) {
 }
 
 
+/**
+ * Calculates the Laepp Bohr Durchmesser based on the given thread properties.
+ * 
+ * @param {Object} threadPropertys - The thread properties object.
+ * @returns {number} - The calculated Laepp Bohr Durchmesser.
+ */
 function getLaeppBohrDurchmesser(threadPropertys) {
     let threadType = LAEPPBOHR_ARRAY.find(element => element.type == threadPropertys.type);
     if (threadType && threadType.func) return threadType.func(threadPropertys);
@@ -229,6 +279,14 @@ function getLaeppBohrDurchmesser(threadPropertys) {
 }
 
 
+/**
+ * Calculates the Laepp Bohr Durchmesser Uni based on the given thread properties.
+ * For Threadtype UN, BS, M, R, G, and W.
+ * @param {Object} threadPropertys - The thread properties object.
+ * @param {number} threadPropertys.diameter - The diameter of the thread.
+ * @param {number} threadPropertys.pitch - The pitch of the thread.
+ * @returns {number} - The calculated Laepp Bohr Durchmesser Uni.
+ */
 function getLaeppBohrDurchmesserUni(threadPropertys) {
     let bohrer = threadPropertys.diameter - (2 * threadPropertys.pitch);
     if (threadPropertys.diameter > 20) bohrer -= 5;
