@@ -125,6 +125,46 @@ function getSubstrX(text) {
 
 
 /**
+ * analyzed and calculate the property of the thread
+ * still to implement: Pg, Fg, NPSM
+ * 
+ * @param {string} abmessung string with thread description
+ * @returns {{type: string, diameter: Number, pitch: Number}} JSON with propertys type, diameter and pitch
+ */
+function extractThreadPropertys(abmessung) {
+    let threadPropertys = { type: '???' };
+    const clearedAbmessung = clearUnusedChars(abmessung);
+    for (let index = 0; index < TYPE_ARRAY.length; index++) {
+        const typeObject = TYPE_ARRAY[index];
+        for (let j = 0; j < typeObject.matches.length; j++) {
+            if (clearedAbmessung.includes(typeObject.matches[j])) {
+                const adjustAbmessung = clearedAbmessung.replace(typeObject.matches[j], '').trim();
+                threadPropertys.type = typeObject.type;
+                typeObject.extractPropertyFunction(adjustAbmessung, threadPropertys);
+                return threadPropertys;
+            }
+        }
+    }
+    extractPropertysUnknow(clearedAbmessung, threadPropertys);
+    return threadPropertys;
+}
+
+
+/**
+ * Removes the unused characters from the given `abmessung` string.
+ * 
+ * @param {string} abmessung - The input string from which unused characters need to be removed.
+ * @returns {string} The `abmessung` string with unused characters removed.
+ */
+function clearUnusedChars(abmessung) {
+    const CLEAR_CHARS = ['GR', 'AR', 'LH'];
+    let clearedAbmessung = abmessung;
+    CLEAR_CHARS.forEach(char => clearedAbmessung = clearedAbmessung.replace(char, ''));
+    return clearedAbmessung.trim();
+}
+
+
+/**
  * Replaces characters in a string based on the provided character array.
  *
  * @param {string} str - The input string to be modified.
@@ -257,7 +297,7 @@ function extractPropertysUN(propertyString, propertyObject) {
 function extractPropertysRG(propertyString, propertyObject) {
     let keys = Object.keys(threatsRG);
     for (let i = 0; i < keys.length; i++) {
-        if (propertyString.includes(keys[i])) {
+        if (propertyString.trim() == keys[i]) {
             propertyObject.diameter = threatsRG[keys[i]].diameter;
             propertyObject.pitch = threatsRG[keys[i]].pitch;
             break;
@@ -287,7 +327,7 @@ function getLaeppBohrDurchmesser(threadPropertys) {
  * @param {number} threadPropertys.pitch - The pitch of the thread.
  * @returns {number} - The calculated Laepp Bohr Durchmesser Uni.
  */
-export function getLaeppBohrDurchmesserUni(threadPropertys) {
+function getLaeppBohrDurchmesserUni(threadPropertys) {
     let bohrer = threadPropertys.diameter - (2 * threadPropertys.pitch);
     if (threadPropertys.diameter > 20) bohrer -= 5;
     else bohrer -= 3;
