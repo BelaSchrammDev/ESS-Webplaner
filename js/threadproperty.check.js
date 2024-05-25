@@ -34,6 +34,9 @@ const CHECKS_ARRAY = [
 ];
 
 
+/**
+ * Extracts thread properties for each element in the CHECKS_ARRAY and performs a check.
+ */
 function extractPropertysfunctionCheck() {
     CHECKS_ARRAY.forEach(element => {
         let result = extractThreadPropertys(element.value);
@@ -45,6 +48,14 @@ function extractPropertysfunctionCheck() {
     });
 }
 
+
+/**
+ * Checks if the given thread properties match the specified test.
+ *
+ * @param {Object} threadPropertys - The thread properties to compare.
+ * @param {Object} test - The test object containing the properties to match against.
+ * @returns {boolean} - Returns true if the thread properties match the test, otherwise false.
+ */
 function ifThreadPropertysRight(threadPropertys, test) {
     return threadPropertys.type === test.type &&
         threadPropertys.diameter === test.diameter &&

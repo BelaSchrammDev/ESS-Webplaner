@@ -6,7 +6,7 @@ const TYPE_ARRAY = [
     { type: 'BS', matches: ['BSF', 'BSW', 'BSC'], extractPropertyFunction: extractPropertysUN },
     { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNJ', 'UNF', 'UNS', 'UNR', 'UNC', 'UN'], extractPropertyFunction: extractPropertysUN },
     { type: 'Tr', matches: ['Tr', 'TR'], extractPropertyFunction: extractPropertysTrM },
-    { type: 'M', matches: ['MJ', 'M'], extractPropertyFunction: extractPropertysTrM },
+    { type: 'M', matches: ['MJ', 'Mj', 'M'], extractPropertyFunction: extractPropertysTrM },
     { type: 'R', matches: ['R'], extractPropertyFunction: extractPropertysRG },
     { type: 'G', matches: ['G'], extractPropertyFunction: extractPropertysRG },
     { type: 'W', matches: ['W'], extractPropertyFunction: extractPropertysW },
@@ -100,6 +100,12 @@ const threatsRG = {
 }
 
 
+/**
+ * Returns a substring of the given text up to the first occurrence of a whitespace or hyphen character.
+ *
+ * @param {string} text - The input text.
+ * @returns {string} The substring of the input text.
+ */
 function getSubstrHS(text) {
     let input = text.trim();
     let pos = input.search(/[\s-]/);
@@ -108,6 +114,12 @@ function getSubstrHS(text) {
 }
 
 
+/**
+ * Returns a substring of the input text excluding the characters after the first occurrence of '-'.
+ *
+ * @param {string} text - The input text.
+ * @returns {string} - The substring of the input text.
+ */
 function getSubstrMinus(text) {
     let input = text.trim();
     let pos = input.search(/[-]/);
@@ -116,6 +128,13 @@ function getSubstrMinus(text) {
 }
 
 
+/**
+ * Returns a substring of the input text up to the first occurrence of 'x'.
+ * If 'x' is not found, returns the entire input text.
+ *
+ * @param {string} text - The input text.
+ * @returns {string} The substring of the input text.
+ */
 function getSubstrX(text) {
     let input = text.trim();
     let pos = input.search(/[x]/);
