@@ -316,7 +316,7 @@ function extractPropertysUN(propertyString, propertyObject) {
 function extractPropertysRG(propertyString, propertyObject) {
     let keys = Object.keys(threatsRG);
     for (let i = 0; i < keys.length; i++) {
-        if (propertyString.trim() == keys[i]) {
+        if (propertyString.trim().startsWith(keys[i])) {
             propertyObject.diameter = threatsRG[keys[i]].diameter;
             propertyObject.pitch = threatsRG[keys[i]].pitch;
             break;
