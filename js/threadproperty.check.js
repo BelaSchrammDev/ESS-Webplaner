@@ -16,6 +16,14 @@ const CHECKS_ARRAY = [
         }
     },
     {
+        value: ' G 1/2-A ',
+        result: {
+            "type": 'G',
+            "diameter": 20.95,
+            "pitch": 1.814,
+        }
+    },
+    {
         value: ' G 1 1/2 ',
         result: {
             "type": 'G',
