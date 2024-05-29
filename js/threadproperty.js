@@ -314,7 +314,8 @@ function extractPropertysUN(propertyString, propertyObject) {
  * @param {object} propertyObject - The object to update with extracted properties.
  */
 function extractPropertysRG(propertyString, propertyObject) {
-    const propertyStringPur = propertyString.substring(0, propertyString.indexOf(","));
+    const minusPosition = propertyString.indexOf("-");
+    const propertyStringPur = propertyString.substring(0, minusPosition == -1 ? propertyString.length : minusPosition);
     let keys = Object.keys(threatsRG);
     for (let i = 0; i < keys.length; i++) {
         if (propertyStringPur.trim() == keys[i]) {
