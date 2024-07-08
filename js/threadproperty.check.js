@@ -1,5 +1,37 @@
 const CHECKS_ARRAY = [
     {
+        value: ' BSC 9/16-26 GR+AR ',
+        result: {
+            "type": 'BS',
+            "diameter": 14.29,
+            "pitch": 0.9769,
+        }
+    },
+    {
+        value: ' BSW 5/8 med. ',
+        result: {
+            "type": 'BSW',
+            "diameter": 15.875,
+            "pitch": 2.309,
+        }
+    },
+    {
+        value: ' W 0.5-24 ',
+        result: {
+            "type": 'W',
+            "diameter": 12.7,
+            "pitch": 1.0583,
+        }
+    },
+    {
+        value: ' W 22x1/22 ',
+        result: {
+            "type": 'W',
+            "diameter": 22,
+            "pitch": 1.1545,
+        }
+    },
+    {
         value: ' G 1 ',
         result: {
             "type": 'G',
@@ -51,7 +83,7 @@ function extractPropertysfunctionCheck() {
         if (ifThreadPropertysRight(result, element.result)) {
             console.log("%c Test passed: " + element.value, "color: green");
         } else {
-            console.error('Test failed:', element.value, 'Result:', result);
+            console.error('Test failed:', element.result, 'Result:', result);
         }
     });
 }
@@ -66,6 +98,6 @@ function extractPropertysfunctionCheck() {
  */
 function ifThreadPropertysRight(threadPropertys, test) {
     return threadPropertys.type === test.type &&
-        threadPropertys.diameter === test.diameter &&
-        threadPropertys.pitch === test.pitch;
+        threadPropertys.diameter == test.diameter &&
+        threadPropertys.pitch == test.pitch;
 }

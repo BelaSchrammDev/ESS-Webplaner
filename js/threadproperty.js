@@ -1,9 +1,8 @@
-const LDBOHR_INVALID = '---';
-
 const TYPE_ARRAY = [
     { type: 'NPSM', matches: ['NPSM'], extractPropertyFunction: extractPropertysUnknow },
     { type: 'VG', matches: ['VG'], extractPropertyFunction: extractPropertysUnknow },
-    { type: 'BS', matches: ['BSF', 'BSW', 'BSC'], extractPropertyFunction: extractPropertysUN },
+    { type: 'BSW', matches: ['BSW'], extractPropertyFunction: extractPropertysBSW },
+    { type: 'BS', matches: ['BSF', 'BSC'], extractPropertyFunction: extractPropertysUN },
     { type: 'UN', matches: ['NGO', 'UNJEF', 'UNJC', 'UNEF', 'UNJF', 'UNJ', 'UNF', 'UNS', 'UNR', 'UNC', 'UN'], extractPropertyFunction: extractPropertysUN },
     { type: 'Tr', matches: ['Tr', 'TR'], extractPropertyFunction: extractPropertysTrM },
     { type: 'M', matches: ['MJ', 'Mj', 'M'], extractPropertyFunction: extractPropertysTrM },
@@ -13,18 +12,68 @@ const TYPE_ARRAY = [
     { type: 'Pg', matches: ['Pg'], extractPropertyFunction: extractPropertysUnknow },
 ];
 
-const LAEPPBOHR_ARRAY = [
-    { type: 'NPSM', func: null },
-    { type: 'VG', func: null },
-    { type: 'BS', func: getLaeppBohrDurchmesserUni },
-    { type: 'UN', func: getLaeppBohrDurchmesserUni },
-    { type: 'Tr', func: null },
-    { type: 'M', func: getLaeppBohrDurchmesserUni },
-    { type: 'R', func: getLaeppBohrDurchmesserUni },
-    { type: 'G', func: getLaeppBohrDurchmesserUni },
-    { type: 'W', func: getLaeppBohrDurchmesserUni },
-    { type: 'Pg', func: null },
-];
+const threadBSW = {
+    "3/16": {
+        "diameter": 4.763,
+        "pitch": 1.0583
+    },
+    "1/4": {
+        "diameter": 6.35,
+        "pitch": 1.27
+    },
+    "5/16": {
+        "diameter": 7.938,
+        "pitch": 1.4111
+    },
+    "3/8": {
+        "diameter": 9.525,
+        "pitch": 1.5875
+    },
+    "7/16": {
+        "diameter": 11.113,
+        "pitch": 1.814
+    },
+    "1/2": {
+        "diameter": 12.7,
+        "pitch": 2.116
+    },
+    "9/16": {
+        "diameter": 14.288,
+        "pitch": 2.116
+    },
+    "5/8": {
+        "diameter": 15.875,
+        "pitch": 2.309
+    },
+    "3/4": {
+        "diameter": 19.05,
+        "pitch": 2.54
+    },
+    "7/8": {
+        "diameter": 22.225,
+        "pitch": 2.822
+    },
+    "1": {
+        "diameter": 25.4,
+        "pitch": 3.175
+    },
+    "1 1/8": {
+        "diameter": 28.575,
+        "pitch": 3.628
+    },
+    "1 1/4": {
+        "diameter": 31.75,
+        "pitch": 3.628
+    },
+    "1 3/8": {
+        "diameter": 34.925,
+        "pitch": 4.233
+    },
+    "1 1/2": {
+        "diameter": 38.1,
+        "pitch": 4.233
+    }
+};
 
 
 const threatMregular_Pitch = {
@@ -52,7 +101,7 @@ const threatMregular_Pitch = {
 }
 
 
-const threatsRG = {
+const threadRG = {
     "1/16": {
         "diameter": 6.84,
         "pitch": 0.907
@@ -176,7 +225,7 @@ function extractThreadPropertys(abmessung) {
  * @returns {string} The `abmessung` string with unused characters removed.
  */
 function clearUnusedChars(abmessung) {
-    const CLEAR_CHARS = ['GR', 'AR', 'LH'];
+    const CLEAR_CHARS = ['GR', 'AR', 'LH', 'med.'];
     let clearedAbmessung = abmessung;
     CLEAR_CHARS.forEach(char => clearedAbmessung = clearedAbmessung.replace(char, ''));
     return clearedAbmessung.trim();
@@ -256,6 +305,20 @@ function extractPropertysTrM(propertyString, propertyObject) {
 }
 
 
+function extractPropertyDiameter(propertySubString, propertyObject) {
+    let factors = propertySubString.trim().split('/');
+    if (factors.length > 1) {
+        let bigFactor = 0;
+        if (factors[0].includes(' ')) {
+            bigFactor = +factors[0].split(' ')[0] * 25.4;
+            factors[0] = factors[0].split(' ')[1];
+        }
+        propertyObject.diameterFull = bigFactor + ((25.4 / factors[1]) * factors[0]);
+        propertyObject.diameter = propertyObject.diameterFull.toFixed(2);
+    }
+}
+
+
 /**
  * Extracts properties from a given property string and updates the property object.
  * For Threadtype UN and BS
@@ -266,16 +329,7 @@ function extractPropertysTrM(propertyString, propertyObject) {
 function extractPropertysUN(propertyString, propertyObject) {
     let propertySubString = getSubstrMinus(propertyString);
     if (propertySubString.includes('/')) {
-        let factors = propertySubString.trim().split('/');
-        if (factors.length > 1) {
-            let bigFactor = 0;
-            if (factors[0].includes(' ')) {
-                bigFactor = +factors[0].split(' ')[0] * 25.4;
-                factors[0] = factors[0].split(' ')[1];
-            }
-            propertyObject.diameterFull = bigFactor + ((25.4 / factors[1]) * factors[0]);
-            propertyObject.diameter = propertyObject.diameterFull.toFixed(2);
-        }
+        extractPropertyDiameter(propertySubString, propertyObject);
     }
     else if (+propertySubString > 20) {
         propertyObject.diameter = (parseFloat(propertySubString)).toFixed(2);
@@ -307,20 +361,20 @@ function extractPropertysUN(propertyString, propertyObject) {
 
 
 /**
- * Extracts properties from a given property string and updates the property object.
- * For Threadtype R and G
- *
- * @param {string} propertyString - The property string to extract properties from.
- * @param {object} propertyObject - The object to update with extracted properties.
+ * Extracts properties from a JSON string and updates the propertyObject based on the threadPropertyList.
+ * 
+ * @param {string} propertyString - The JSON string containing the property.
+ * @param {object} propertyObject - The object to update with the extracted properties.
+ * @param {object} threadPropertyList - The list of thread properties.
  */
-function extractPropertysRG(propertyString, propertyObject) {
+function extractPropertysFromJson(propertyString, propertyObject, threadPropertyList) {
     const minusPosition = propertyString.indexOf("-");
     const propertyStringPur = propertyString.substring(0, minusPosition == -1 ? propertyString.length : minusPosition);
-    let keys = Object.keys(threatsRG);
+    let keys = Object.keys(threadPropertyList);
     for (let i = 0; i < keys.length; i++) {
         if (propertyStringPur.trim() == keys[i]) {
-            propertyObject.diameter = threatsRG[keys[i]].diameter;
-            propertyObject.pitch = threatsRG[keys[i]].pitch;
+            propertyObject.diameter = threadPropertyList[keys[i]].diameter;
+            propertyObject.pitch = threadPropertyList[keys[i]].pitch;
             break;
         }
     }
@@ -328,31 +382,26 @@ function extractPropertysRG(propertyString, propertyObject) {
 
 
 /**
- * Calculates the Laepp Bohr Durchmesser based on the given thread properties.
- * 
- * @param {Object} threadPropertys - The thread properties object.
- * @returns {number} - The calculated Laepp Bohr Durchmesser.
+ * Extracts properties from a given property string and updates the property object.
+ * For Threadtype R and G
+ *
+ * @param {string} propertyString - The property string to extract properties from.
+ * @param {object} propertyObject - The object to update with extracted properties.
  */
-function getLaeppBohrDurchmesser(threadPropertys) {
-    let threadType = LAEPPBOHR_ARRAY.find(element => element.type == threadPropertys.type);
-    if (threadType && threadType.func) return threadType.func(threadPropertys);
-    return LDBOHR_INVALID;
+function extractPropertysRG(propertyString, propertyObject) {
+    extractPropertysFromJson(propertyString, propertyObject, threadRG);
 }
 
 
 /**
- * Calculates the Laepp Bohr Durchmesser Uni based on the given thread properties.
- * For Threadtype UN, BS, M, R, G, and W.
- * @param {Object} threadPropertys - The thread properties object.
- * @param {number} threadPropertys.diameter - The diameter of the thread.
- * @param {number} threadPropertys.pitch - The pitch of the thread.
- * @returns {number} - The calculated Laepp Bohr Durchmesser Uni.
+ * Extracts properties from a given property string and updates the property object.
+ * For Threadtype BSW (British Standard Whitworth / Regular).
+ *
+ * @param {string} propertyString - The property string to extract properties from.
+ * @param {object} propertyObject - The object to update with extracted properties.
  */
-function getLaeppBohrDurchmesserUni(threadPropertys) {
-    let bohrer = threadPropertys.diameter - (2 * threadPropertys.pitch);
-    if (threadPropertys.diameter > 20) bohrer -= 5;
-    else bohrer -= 3;
-    let result = bohrer.toFixed(2);
-    if (result < 1.6) result = 1.6;
-    return result;
+function extractPropertysBSW(propertyString, propertyObject) {
+    extractPropertysFromJson(propertyString, propertyObject, threadBSW);
 }
+
+
