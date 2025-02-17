@@ -6,7 +6,7 @@ const LAEPPBOHR_ARRAY = [
     { type: 'VG', func: null },
     { type: 'BS', func: getLaeppBohrDurchmesserUni },
     { type: 'UN', func: getLaeppBohrDurchmesserUni },
-    { type: 'Tr', func: null },
+    { type: 'Tr', func: getLaeppBohrDurchmesserTr },
     { type: 'M', func: getLaeppBohrDurchmesserUni },
     { type: 'R', func: getLaeppBohrDurchmesserUni },
     { type: 'G', func: getLaeppBohrDurchmesserUni },
@@ -14,6 +14,17 @@ const LAEPPBOHR_ARRAY = [
     { type: 'Pg', func: null },
 ];
 
+
+const LAEPPBOHRDECREASE_ARRAY_TR = [
+    { pitch: 1, decreasevalue: 6 },
+    { pitch: 1.25, decreasevalue: 6 },
+    { pitch: 1.5, decreasevalue: 5 },
+    { pitch: 2, decreasevalue: 6 },
+    { pitch: 3, decreasevalue: 7 },
+    { pitch: 4, decreasevalue: 10 },
+    { pitch: 5, decreasevalue: 10 },
+];
+    
 
 
 /**
@@ -44,4 +55,9 @@ function getLaeppBohrDurchmesserUni(threadPropertys) {
     let result = bohrer.toFixed(2);
     if (result < 1.6) result = 1.6;
     return result;
+}
+
+function getLaeppBohrDurchmesserTr(threadPropertys) {
+    let decrease = LAEPPBOHRDECREASE_ARRAY_TR.find(element => element.pitch == threadPropertys.pitch);
+    return decrease ? threadPropertys.diameter - decrease.decreasevalue : LDBOHR_INVALID;
 }
