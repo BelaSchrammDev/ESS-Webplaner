@@ -59,7 +59,7 @@ function getLaeppBohrDurchmesserUni(threadPropertys) {
 
 function getLaeppBohrDurchmesserTr(threadPropertys) {
     let decrease = LAEPPBOHRDECREASE_ARRAY_TR.find(element => element.pitch == threadPropertys.pitch);
-    if (decrease = null) return LDBOHR_INVALID;
+    if (decrease == null) return LDBOHR_INVALID;
     let decreaseValue = threadPropertys.diameter - decrease.decreasevalue;
     if (threadPropertys.diameter > 26) decreaseValue -= 2;
     return decreaseValue;
